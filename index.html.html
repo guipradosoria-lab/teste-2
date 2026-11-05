@@ -1,0 +1,820 @@
+<title>Caderno de Repertórios</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: folha de redação — margem vermelha à esquerda, pauta clara, cards por eixo; marca-texto amarelo no "como usar" */
+:root{
+  --paper:#f7f8fb; --sheet:#ffffff; --ink:#1b2340; --muted:#5a6384; --rule:#e3e7f1;
+  --pen:#2346c8; --margin:#d64a5a; --hl:#ffe76a; --hl-ink:#2a2300; --chip:#eef1fa;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0f1322; --sheet:#161b2e; --ink:#e6e9f5; --muted:#9aa3c4; --rule:#252c45;
+  --pen:#8fa6ff; --margin:#ff7a88; --hl:#5c5214; --hl-ink:#fff6c2; --chip:#1f2640; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1322; --sheet:#161b2e; --ink:#e6e9f5; --muted:#9aa3c4; --rule:#252c45;
+  --pen:#8fa6ff; --margin:#ff7a88; --hl:#5c5214; --hl-ink:#fff6c2; --chip:#1f2640; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1080px;margin:0 auto}
+header.hero{padding-block:48px 28px;border-bottom:2px solid var(--ink);display:grid;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--margin)}
+h1{font-family:var(--display);font-stretch:70%;font-weight:900;font-size:clamp(44px,9vw,92px);line-height:.92;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--pen)}
+.lead{max-width:62ch;color:var(--muted);margin:0;font-size:17px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:28px;border:1.5px solid var(--ink);background:var(--sheet)}
+.step{padding:18px 20px;border-left:1.5px solid var(--ink);min-width:0}
+.step:first-child{border-left:none}
+.step b{font-family:var(--display);font-stretch:80%;font-size:22px;display:block;line-height:1.1;margin-bottom:6px}
+.step span{font-family:var(--mono);font-size:12px;color:var(--pen)}
+.step p{margin:4px 0 0;font-size:14.5px;color:var(--muted)}
+.ex{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ex div{background:var(--sheet);border:1px solid var(--rule);padding:14px 16px;font-size:14.5px;min-width:0}
+.ex .bad b{color:var(--margin)} .ex .good b{color:var(--pen)}
+.ex b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
+.where{margin-top:16px;overflow-x:auto}
+.where table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px;background:var(--sheet)}
+.where th,.where td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule)}
+.where th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.drawers{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;font-size:14.5px}
+.drawers div{background:var(--chip);padding:8px 12px;border-radius:4px}
+.drawers b{font-family:var(--display);font-stretch:85%}
+h2.sec{font-family:var(--display);font-stretch:75%;font-weight:800;font-size:28px;margin:44px 0 0;line-height:1.1}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:14px 12px;border-bottom:1px solid var(--rule);margin-top:36px;display:grid;gap:10px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+#q{width:100%;font:inherit;font-size:16px;padding:10px 14px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);border-radius:0}
+#q:focus{outline:3px solid var(--pen);outline-offset:1px}
+.navs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.navs a,.types button{flex:none;font-family:var(--mono);font-size:12px;padding:6px 10px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);text-decoration:none;border-radius:999px;cursor:pointer}
+.navs a:hover,.types button:hover{border-color:var(--pen)}
+.types{display:flex;gap:6px;flex-wrap:wrap}
+.types button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+section.axis{margin-top:40px;scroll-margin-top:150px}
+.axis-head{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.axis-head .num{font-family:var(--display);font-stretch:62%;font-weight:900;font-size:64px;line-height:.8;color:var(--margin);grid-row:span 2}
+.axis-head h3{font-family:var(--display);font-stretch:80%;font-weight:800;font-size:clamp(24px,4vw,34px);margin:0;line-height:1;text-wrap:balance}
+.axis-head p{margin:0;color:var(--muted);font-size:14.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:14px;margin-top:16px}
+.card{background:var(--sheet);border:1px solid var(--rule);border-left:3px solid var(--margin);padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;min-width:0;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 27px,var(--rule) 27px 28px);background-position:0 54px;background-size:100% 100%}
+.card h4{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:19px;line-height:1.15;margin:0;text-wrap:balance}
+.card h4 i{font-family:var(--body);font-weight:500;font-stretch:100%}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:2px 7px;background:var(--chip);color:var(--muted);border-radius:3px}
+.tag.pos{color:var(--pen);background:transparent;border:1px solid var(--pen)}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block}
+.card p{margin:0;font-size:15px;overflow-wrap:anywhere}
+.use{background:linear-gradient(transparent 4%,var(--hl) 4%,var(--hl) 96%,transparent 96%);color:var(--hl-ink);padding:6px 8px;margin:0 -8px}
+.use .lbl{color:var(--hl-ink);opacity:.75}
+.eg{font-style:italic;color:var(--pen);border-left:2px solid var(--pen);padding-left:10px}
+.warn{font-size:14px;color:var(--margin)}
+.warn b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.empty{margin-top:30px;color:var(--muted)}
+.enc{margin-top:26px;display:grid;gap:10px}
+.enc-head{display:grid;gap:4px;padding-bottom:8px;border-bottom:1px dashed var(--rule)}
+.enc-head h4{font-family:var(--display);font-stretch:80%;font-weight:800;font-size:24px;margin:0;line-height:1.1;color:var(--pen)}
+.enc-head p{margin:0;font-size:15px;max-width:75ch}
+.enc-head .tf{font-style:italic;color:var(--muted)}
+.enc-head .tf b{font-family:var(--mono);font-style:normal;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--margin)}
+.enc .grid{margin-top:4px}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font-size:14px;max-width:70ch}
+@media (max-width:640px){.steps{grid-template-columns:1fr}.step{border-left:none;border-top:1.5px solid var(--ink)}.step:first-child{border-top:none}.ex{grid-template-columns:1fr}.axis-head .num{font-size:48px}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.kitbox{margin-top:40px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:end;background:var(--sheet);border:1.5px solid var(--ink);padding:22px 24px}
+h2.sec.kit-h{margin:4px 0 8px}
+.kitbox p{margin:0;font-size:15px}
+.kit-prog{display:grid;gap:6px}
+.kit-prog p{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.meter{height:10px;background:var(--chip);border:1px solid var(--rule)}
+.meter span{display:block;height:100%;width:0;background:var(--margin);transition:width .3s}
+.meter.alt span{background:var(--pen)}
+.filters{margin-top:20px;display:grid;gap:10px}
+.frow{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;align-items:center}
+.flbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.chips button{flex:none;font-family:var(--mono);font-size:12px;padding:6px 11px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);border-radius:999px;cursor:pointer}
+.chips button:hover{border-color:var(--pen)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+#toggles button[aria-pressed="true"]{background:var(--margin);border-color:var(--margin);color:var(--sheet)}
+.srow{display:flex;gap:12px;align-items:center}
+.srow #q{flex:1;min-width:0}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.tools{margin-top:16px}
+.chead{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.chead h4{min-width:0}
+.star{color:var(--margin);margin-right:6px}
+.card.kit{border-left-color:var(--pen);border-left-width:5px}
+.dom{flex:none;font-family:var(--mono);font-size:12.5px;font-weight:700;padding:7px 11px;min-height:36px;border:1.5px solid var(--pen);background:var(--sheet);color:var(--pen);cursor:pointer;border-radius:4px}
+.dom:hover{background:var(--chip)}
+.dom[aria-pressed="true"]{background:var(--pen);border-color:var(--pen);color:var(--sheet)}
+.card.done{border-left-color:var(--pen);border-left-width:5px}
+.demo{font-family:var(--mono);font-size:12px;border:1.5px solid var(--pen);color:var(--pen);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.demo.on{background:var(--pen);color:var(--sheet)}
+.cbody{display:flex;flex-direction:column;gap:8px}
+.peek{display:none;font-family:var(--mono);font-size:12px;color:var(--muted);margin:0}
+body.review .card{cursor:pointer}
+body.review .card:not(.open) .cbody{display:none}
+body.review .card:not(.open) .peek{display:block}
+.card:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin-top:16px}
+.mcard{background:var(--sheet);border:1px solid var(--rule);padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mcard.wide{grid-column:1/-1}
+.mcard h4{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:19px;margin:0}
+.tpl{margin:0;font-size:15.5px;background:var(--chip);padding:10px 12px;border-left:2px solid var(--pen)}
+.mnote{margin:0;font-size:14px;color:var(--muted)}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:8px;counter-reset:f}
+.flow li{counter-increment:f;background:var(--chip);padding:10px 12px;display:grid;gap:4px;font-size:14px;min-width:0}
+.flow li b{font-family:var(--display);font-stretch:85%;font-size:16px}
+.flow li b::before{content:counter(f) ". ";color:var(--margin)}
+.flow li span{color:var(--muted);font-style:italic}
+.five{display:flex;flex-wrap:wrap;gap:8px}
+.five span{background:var(--chip);padding:8px 12px;font-size:13.5px;display:grid}
+.five b{font-family:var(--display);font-stretch:85%;font-size:15px}
+@media (max-width:720px){.kitbox{grid-template-columns:1fr}.frow{grid-template-columns:1fr;gap:4px}}
+@media print{.tools,.filters,.dom{display:none}}
+.warnbox{margin-top:16px;background:var(--sheet);border:1.5px solid var(--margin);padding:14px 16px;font-size:14.5px}
+.warnbox b{color:var(--margin)}
+.mlist{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14.5px}
+.mnote b{color:var(--ink)}
+.mcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+.mcols>div{min-width:0;display:grid;gap:4px}
+.mcols>div>b{font-family:var(--display);font-stretch:85%;font-size:15px}
+.fbar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.fsel{display:grid;gap:2px;min-width:0;flex:1 1 120px}
+.fsel span{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.fsel select{font:inherit;font-family:var(--mono);font-size:12.5px;padding:7px 8px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);border-radius:4px;width:100%;min-width:0}
+.fsel select.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.fsel select:focus-visible{outline:3px solid var(--pen);outline-offset:1px}
+.fbtn{flex:0 0 auto;font-family:var(--mono);font-size:12.5px;padding:8px 12px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);border-radius:4px;cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--margin);border-color:var(--margin);color:var(--sheet)}
+.fbtn.clear{border-color:var(--margin);color:var(--margin)}
+.tools{display:grid;gap:8px}
+section.axis{scroll-margin-top:200px}
+@media (max-width:520px){.fsel{flex:1 1 calc(50% - 8px)}}
+.kitbox{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr)}
+.kit-search p{margin:4px 0 8px;font-size:14.5px}
+.sugs{display:flex;flex-wrap:wrap;gap:6px}
+.sug{font-family:var(--mono);font-size:12px;padding:5px 10px;border:1px solid var(--pen);background:var(--sheet);color:var(--pen);border-radius:999px;cursor:pointer}
+.sug:hover{background:var(--chip)}
+.tag.fit{background:var(--pen);color:var(--sheet)}
+.tag.org{background:transparent;border:1px dashed var(--rule)}
+.more{margin-top:16px;width:100%}
+@media (max-width:900px){.kitbox{grid-template-columns:1fr}}
+.ai-only{display:none!important}
+body.ai .ai-only{display:revert!important}
+body.ai .aibox.ai-only{display:grid!important}
+.aibox{margin-top:16px;gap:10px;background:var(--sheet);border:1.5px solid var(--pen);padding:14px 16px}
+.aihead{display:grid;gap:6px}
+.aibtn{background:var(--pen);border-color:var(--pen);color:var(--sheet);font-weight:700;justify-self:start;white-space:normal;text-align:left}
+.aibtn:disabled,.howbtn:disabled{opacity:.7;cursor:wait}
+.subh{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:18px;margin:22px 0 0}
+.why{margin:0;font-size:14px;color:var(--pen);font-weight:600}
+.howbtn{align-self:flex-start;font-family:var(--mono);font-size:12.5px;font-weight:700;padding:8px 12px;border:1.5px dashed var(--pen);background:var(--sheet);color:var(--pen);border-radius:4px;cursor:pointer;text-align:left}
+.howbtn:hover{background:var(--chip)}
+.how{background:var(--chip);border-left:3px solid var(--pen);padding:10px 12px;display:grid;gap:6px}
+.how p{margin:0;font-size:14.5px}
+.err{color:var(--margin)}
+.aimore{justify-self:start;font-family:var(--mono);font-size:12px;padding:6px 10px;border:1px solid var(--pen);background:var(--sheet);color:var(--pen);border-radius:4px;cursor:pointer}
+.aiout:empty{display:none}
+.aiout{display:grid;gap:6px;border-top:1px dashed var(--rule);padding-top:8px}
+.howbtn{border-style:solid}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <span class="eyebrow">ENEM · Competência 2</span>
+  <h1>Caderno de <em>Repertórios</em></h1>
+  <p class="lead">Todos os repertórios que já apareceram nas nossas conversas, por eixo temático. Cada card diz o que a ideia significa, onde ela entra na sua estrutura e como amarrar no argumento.</p>
+</header>
+
+<h2 class="sec">Antes de tudo: como um repertório pontua</h2>
+<div class="steps">
+  <div class="step"><span>passo 1</span><b>Cita</b><p>Nome do autor, obra, lei ou fonte do dado, com precisão. "Um filósofo disse" não vale.</p></div>
+  <div class="step"><span>passo 2</span><b>Explica</b><p>Uma frase com a ideia central, nas suas palavras. É isso que prova que você entendeu.</p></div>
+  <div class="step"><span>passo 3</span><b>Amarra</b><p>Liga ao recorte do tema com "nesse sentido", "dessa forma", "logo". Sem isso, vira enfeite.</p></div>
+</div>
+<div class="ex">
+  <div class="bad"><b>Errado</b>Como disse Bauman, vivemos na modernidade líquida. Portanto, a saúde mental é um problema.</div>
+  <div class="good"><b>Certo</b>O sociólogo Zygmunt Bauman cunhou o termo "modernidade líquida" para descrever vínculos frágeis e descartáveis. Nesse contexto, o adolescente brasileiro constrói sua autoestima sobre validações efêmeras, o que fragiliza sua estabilidade emocional.</div>
+</div>
+<div class="warnbox"><b>Cuidado com o repertório de bolso.</b> A Cartilha do Participante 2026 do Inep avisa que repertório decorado, automático ou forçado pode ser avaliado como não produtivo. Faz o teste: relê o parágrafo sem o repertório. Se tudo continuar fazendo sentido sem ajuste, ele estava solto. O repertório tem que aparecer pelo menos 2 vezes no parágrafo, de preferência 3 (na apresentação, na consequência e no fechamento), e ficar perto de uma palavra do argumento e uma do tema.</div>
+<div class="where">
+<table>
+  <thead><tr><th>Tipo de repertório</th><th>Melhor posição</th><th>Função</th></tr></thead>
+  <tbody>
+    <tr><td>Filósofo / sociólogo</td><td>Logo após a mini justificativa no D1/D2</td><td>Explica a causa</td></tr>
+    <tr><td>Lei / Constituição</td><td>D1/D2 ou proposta</td><td>Mostra o direito violado</td></tr>
+    <tr><td>Dado estatístico</td><td>Fim do parágrafo</td><td>Prova a dimensão do problema</td></tr>
+    <tr><td>Filme / série / livro</td><td>Introdução ou meio do D2</td><td>Ilustra, nunca sustenta sozinho</td></tr>
+    <tr><td>Fato histórico</td><td>Introdução</td><td>Contextualiza</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="drawers">
+  <div>Causa é falha do <b>Estado</b> → CF/88, Dimenstein, Sérgio Buarque, Locke</div>
+  <div>Causa é <b>educação</b> → Paulo Freire, Vygotsky</div>
+  <div>Causa é <b>mentalidade da sociedade</b> → Durkheim, Arendt, Bauman</div>
+</div>
+
+<section class="kitbox" aria-label="Seu progresso">
+  <div class="kit-txt">
+    <span class="eyebrow">Seu progresso</span>
+    <p>Em cada card tem um botão <b class="demo">☐ Entendi</b>. Toca nele quando você já souber explicar e usar aquele repertório. Ele fica azul <b class="demo on">✓ Entendi</b>, e você pode desmarcar quando quiser. Fica salvo neste navegador.</p>
+  </div>
+  <div class="kit-search"><span class="eyebrow">Pesquisa inteligente</span><p>Escreve uma palavra ou cola o tema da redação na busca. Aparecem os repertórios que encaixam, do mais pro menos, e ela entende sinônimos e corrige erros de digitação. Em cada resultado, o botão <b>Como usar</b> mostra onde o repertório entra, como amarrar no seu tema e uma frase modelo. Experimenta:</p><div class="sugs"><button type="button" class="sug" data-q="ia">ia</button><button type="button" class="sug" data-q="idoso">idoso</button><button type="button" class="sug" data-q="fake news">fake news</button><button type="button" class="sug" data-q="lixo">lixo</button><button type="button" class="sug" data-q="saúde mental dos jovens">saúde mental dos jovens</button><button type="button" class="sug" data-q="Desafios para a valorização dos povos indígenas no Brasil">tema inteiro</button></div></div>
+  <div class="kit-prog" aria-live="polite"><div class="meter alt"><span id="mall"></span></div><p id="pall"></p></div>
+</section>
+
+
+
+<div class="tools" role="search">
+  <div class="srow"><input id="q" type="search" placeholder="Escreve um tema ou palavra: ia, idoso, fake news… ou cola o tema inteiro" aria-label="Buscar repertório"><span class="count" id="count"></span></div>
+  <div class="fbar">
+    <label class="fsel"><span>Tipo</span><select id="ftype"></select></label>
+    <label class="fsel"><span>Onde entra</span><select id="fpos"></select></label>
+    <label class="fsel"><span>Mostrar</span><select id="fshow"><option value="all">Todos</option><option value="left">Só os que faltam</option></select></label>
+    <button type="button" id="trev" class="fbtn" aria-pressed="false">Modo revisão</button>
+    <button type="button" id="fclear" class="fbtn clear" hidden>Limpar filtros</button>
+  </div>
+  <nav class="navs" id="navs" aria-label="Seções"></nav>
+</div>
+
+
+<main id="out"></main>
+<p class="empty" id="empty" hidden>Nada encaixou com essa busca e esses filtros. Tenta outra palavra (um sinônimo ou o assunto mais geral) ou toca em Limpar filtros.</p>
+
+<section class="axis" id="modelos">
+  <div class="axis-head"><span class="num">✎</span><h3>Modelos de escrita</h3><p>Moldes pra encaixar os repertórios. Troca os colchetes pelo tema do dia.</p></div>
+  <div class="mgrid">
+    <article class="mcard wide">
+      <h4>Seu desenvolvimento (D1 e D2)</h4>
+      <ol class="flow">
+        <li><b>Tópico frasal</b><span>Em primeiro lugar, / Além disso, + a causa</span></li>
+        <li><b>Causa</b><span>Isso ocorre porque…</span></li>
+        <li><b>Mini justificativa</b><span>Assim, / Dessa forma,</span></li>
+        <li><b>Repertório</b><span>Nesse sentido, segundo [autor]…</span></li>
+        <li><b>Consequência</b><span>Como resultado, / Consequentemente,</span></li>
+        <li><b>Consequência da consequência</b><span>o que, por sua vez,…</span></li>
+        <li><b>Fechamento</b><span>Logo, / Portanto, + retoma o tema</span></li>
+      </ol>
+      <p class="mnote">Os tópicos frasais modelo de cada encaminhamento estão lá em cima, na seção Encaminhamentos.</p>
+    </article>
+    <article class="mcard"><h4>Introdução por analogia</h4><p class="tpl">Na obra [título], narra-se [recorte relevante]. De forma análoga, no Brasil, [problema] também ocorre, visto que [explique a semelhança].</p><p class="mnote">A ficção e o cenário atual se aproximam.</p></article>
+    <article class="mcard"><h4>Introdução por contraste</h4><p class="tpl">Na obra [título], apresenta-se [situação]. Por outro lado, no Brasil, [realidade oposta] persiste, o que prejudica [grupo ou direito].</p><p class="mnote">A diferença precisa sustentar a crítica.</p></article>
+    <article class="mcard"><h4>Histórica · herança</h4><p class="tpl">Durante [período], ocorreu [fato]. Na contemporaneidade, ainda persiste [herança], evidenciada por [problema atual].</p><p class="mnote">O passado explica a permanência. Ex.: Lei Áurea, Revolta da Vacina, Barbacena.</p></article>
+    <article class="mcard"><h4>Histórica · contraste negativo</h4><p class="tpl">Durante [período], [situação]. Em contrapartida, hoje [mudança negativa], visto que [cenário atual].</p><p class="mnote">A comparação mostra uma perda.</p></article>
+    <article class="mcard"><h4>Histórica · contraste positivo</h4><p class="tpl">Durante [período], [limitação]. Hoje, [avanço]. Porém, ainda existem [problemas] a superar.</p><p class="mnote">Reconhece o avanço e delimita o impasse. Ex.: Constituição de 1988, CLT.</p></article>
+    <article class="mcard"><h4>Introdução com autor</h4><p class="tpl">Segundo [autor], [ideia]. Sob essa ótica, a realidade brasileira evidencia [problema], visto que [ligação com o tema].</p></article>
+    <article class="mcard"><h4>Introdução com lei</h4><p class="tpl">De acordo com [norma], [direito previsto]. Porém, sua efetivação é limitada por [obstáculo], como se observa em [situação concreta].</p></article>
+    <article class="mcard"><h4>Introdução com conceito</h4><p class="tpl">O termo [nome] diz respeito a [definição]. Essa dinâmica aparece em [contexto], pois [mecanismo e consequência].</p></article>
+    <article class="mcard"><h4>Fecho da introdução (tese)</h4><p class="tpl">Nesse viés, é importante discutir [argumento 1] e [argumento 2] como impulsionadores desse cenário, a fim de elencar medidas.</p></article>
+    <article class="mcard wide"><h4>Conclusão · proposta de intervenção</h4>
+      <p class="tpl">Portanto, cabe a [agente], responsável por [detalhamento], realizar [ação], por meio de [meio], a fim de [finalidade].</p>
+      <div class="five"><span><b>Agente</b>quem faz</span><span><b>Ação</b>o que faz</span><span><b>Meio</b>como faz</span><span><b>Finalidade</b>pra quê</span><span><b>Detalhamento</b>de qualquer um dos outros</span></div>
+      <p class="mnote">A proposta tem que responder às causas do D1 e D2 e respeitar os direitos humanos. Uma boa saída é fazer uma proposta pra cada argumento do desenvolvimento.</p>
+
+    </article>
+  </div>
+</section>
+
+<footer>Caderno de estudo para a redação do ENEM, com repertórios de conhecimento público organizados por eixo e por encaminhamento. As frases prontas são modelos: adapta ao tema antes de usar. Números e leis mudam, então confere a fonte mais recente antes de citar um valor exato.</footer>
+</div>
+
+<script>
+const AX=[
+{id:"bolso",t:"Repertórios de bolso",s:"Servem em quase todo tema. Decora esses primeiro e treina encaixar em 3 temas diferentes.",r:[
+["Constituição Federal de 1988, art. 5º e 6º","Lei","D1/D2 · Proposta","O art. 5º diz que todos são iguais perante a lei. O art. 6º lista os direitos sociais: educação, saúde, alimentação, moradia, trabalho, segurança, lazer, entre outros.","Serve pra qualquer direito negado. A jogada é mostrar o contraste entre o que a lei garante e o que acontece na prática.","Embora a Constituição de 1988 assegure, em seu artigo 6º, o direito à saúde, essa garantia não se concretiza para grande parte da população."],
+["Zygmunt Bauman — Modernidade Líquida","Sociologia","D1/D2","Na modernidade, relações, vínculos e até identidades ficaram frágeis, rápidos e descartáveis, como um líquido que não mantém forma.","Tecnologia, redes sociais, consumo, relações afetivas, saúde mental. Liga o vínculo frágil à consequência concreta do tema.",""],
+["Émile Durkheim — fato social e anomia","Sociologia","D1/D2","Fato social é um comportamento coletivo que existe fora do indivíduo e o pressiona a agir de certo jeito. Anomia é quando as normas e instituições perdem a força de orientar a sociedade.","Quando o problema foi normalizado pela sociedade (fato social) ou quando as instituições falham (anomia).","Segundo Durkheim, o fato social exerce coerção sobre o indivíduo, o que explica a naturalização da violência contra a mulher no Brasil."],
+["Hannah Arendt — banalidade do mal","Filosofia","D1/D2","Ao acompanhar o julgamento de Eichmann, Arendt percebeu que o mal pode ser cometido por pessoas comuns que só seguem ordens e o fluxo, sem refletir.","Violência normalizada, indiferença coletiva, omissão diante de um problema que todo mundo vê.",""],
+["Paulo Freire — Pedagogia do Oprimido / da Autonomia","Educação","D1/D2 · Proposta","Critica a \"educação bancária\", que só deposita conteúdo no aluno. Defende uma educação dialógica, que forma consciência crítica e liberta.","Qualquer recorte que envolva educação ou conscientização. Também fortalece a proposta de intervenção.",""],
+["Byung-Chul Han — Sociedade do Cansaço","Filosofia","D1/D2","Hoje ninguém precisa de um chefe opressor: o próprio sujeito se cobra desempenho o tempo todo, se autoexplora e adoece (burnout, depressão).","Saúde mental, excesso de trabalho e produtividade, redes sociais. Bom pra abrir o D1 explicando a causa.",""],
+["Milton Santos — espaço e cidadania mutilada","Geografia","D1/D2","O espaço é produto social: o lugar onde a pessoa mora define o acesso a direitos. Parte da população tem uma \"cidadania mutilada\".","Desigualdade, periferias, exclusão territorial, globalização que aprofunda diferenças.",""],
+["Sérgio Buarque de Holanda — Raízes do Brasil (homem cordial)","Sociologia","D1/D2","\"Cordial\" vem de coração, não de gentileza. O brasileiro tende a agir pelo afeto e pelo pessoal, misturando o público e o privado.","Jeitinho, corrupção, negligência do Estado, herança colonial nas instituições.","",""],
+["ODS da Agenda 2030 (ONU)","Documento internacional","Intro · Proposta","São 17 objetivos globais, como fome zero, educação de qualidade, igualdade de gênero e ação climática.","Qualquer problema social ou ambiental. Funciona bem na introdução ou pra dar peso à proposta.",""],
+["Vidas Secas (Graciliano Ramos) / Morte e Vida Severina (João Cabral)","Literatura","Intro","Retratam a miséria, a seca, o êxodo e a invisibilidade do sertanejo.","Fome, pobreza, desigualdade regional, migração.",""],
+["Declaração Universal dos Direitos Humanos (ONU, 1948)","Documento internacional","Intro · D1/D2 · Proposta","Criada depois da Segunda Guerra, garante direitos básicos a todo ser humano: vida, liberdade, igualdade, educação, trabalho, saúde.","Funciona em praticamente todo tema. Também ajuda na Competência 5, porque a proposta precisa respeitar os direitos humanos.","Embora a Declaração Universal dos Direitos Humanos, de 1948, assegure a todos o direito à [direito do tema], essa garantia ainda não é realidade para grande parte dos brasileiros."],
+["Aristóteles — o homem como animal político","Filosofia","Intro · D1","O ser humano vive em comunidade (pólis), e a política existe pra buscar o bem comum e a felicidade coletiva.","Use quando o problema afeta a coletividade e mostra que o Estado não está cumprindo o objetivo de promover o bem comum.","Para Aristóteles, a política tem como finalidade o bem comum; contudo, no Brasil, [problema do tema] revela que essa função não tem sido cumprida."],
+["Jean-Paul Sartre — condenados a ser livres","Filosofia","D2 · Conclusão","Pro existencialismo, o ser humano é livre e, por isso, totalmente responsável pelas suas escolhas e pelo que elas causam nos outros.","Responsabilidade individual e coletiva: omissão, preconceito, consumo, trânsito. Bom pra cobrar o papel da sociedade, não só do Estado.",""]
+]},
+{id:"saude",t:"Saúde mental, corpo e padrões estéticos",s:"Saúde mental dos jovens, culto ao corpo, gordofobia, padrões de beleza.",r:[
+["Schopenhauer — o pêndulo entre dor e tédio","Filosofia","D1","A vida oscila como um pêndulo: o desejo gera sofrimento, e quando é satisfeito a satisfação dura pouco e vira tédio ou um novo desejo.","D1 sobre a insatisfação individual com o corpo: sempre falta \"mais um\" procedimento. Liga com dado concreto do Brasil.","","Escreve Schopenhauer, não \"Schoppenhauer\"."],
+["Naomi Wolf — O Mito da Beleza","Sociologia","D2","O padrão de beleza funciona como forma de controle social, principalmente sobre as mulheres.","D2 sobre a imposição social do padrão. Se ampliar pra todos, deixa claro que o foco original dela é a mulher.",""],
+["Jean Baudrillard — A Sociedade de Consumo","Sociologia","D1","Consumimos signos, não utilidades. O corpo virou o objeto de consumo mais valorizado da modernidade.","Causa mercadológica do culto ao corpo: academias, estética, suplementos.","","Não confunde com simulacro e hiper-real, que é outro livro."],
+["Byung-Chul Han — A Salvação do Belo","Filosofia","D2","Critica a estética do \"liso\": tudo polido, sem marca e sem defeito, como nas fotos das redes.","Filtros, harmonização facial, perfeição digital.",""],
+["Michel Foucault — corpos dóceis (Vigiar e Punir)","Filosofia","D1/D2","A sociedade disciplina os corpos pra que se encaixem numa norma, por meio da vigilância e da punição.","Gordofobia, padrão estético, cancelamento, vigilância digital.",""],
+["Mito de Narciso","Mitologia","Intro","Narciso se apaixona pelo próprio reflexo e definha olhando pra ele.","Abertura clássica ligando com selfies e redes sociais.",""],
+["O Retrato de Dorian Gray (Oscar Wilde)","Literatura","Intro · D2","O jovem Dorian fica eternamente bonito enquanto seu retrato envelhece e apodrece no lugar dele.","Obsessão pela aparência e pela juventude eterna.",""],
+["A Substância (2024)","Filme","Intro","Sátira sobre uma atriz obcecada em continuar jovem, pressionada pelo padrão da mídia.","Introdução atual e diferente pra culto ao corpo.",""],
+["A Baleia (2022)","Filme","Intro","Um homem com obesidade grave, isolado, mostra o peso do estigma e da solidão.","Introdução de tema sobre pressão estética ou gordofobia.",""],
+["\"Queda Livre\" / Nosedive (Black Mirror)","Série","Intro · D2","Uma sociedade em que todo mundo dá nota a todo mundo, e a nota decide onde a pessoa pode ir. Expor a própria vida vira busca por aprovação.","Vida medida por aprovação, autoestima ligada a curtidas. Também liga com algoritmos e polarização.",""],
+["13 Reasons Why / Divertida Mente","Série / Filme","D2","Sofrimento psíquico adolescente / importância de validar todas as emoções, inclusive a tristeza.","Uma frase ilustrando a consequência humana no D2.",""],
+["OMS — depressão e ansiedade entre jovens","Dado","Fim do parágrafo","Depressão e ansiedade estão entre as principais causas de adoecimento e incapacidade entre jovens.","Fecha o parágrafo dimensionando o problema. Nunca abre.",""],
+["ISAPS","Dado","D1","O Brasil aparece há anos entre os países que mais fazem procedimentos estéticos no mundo.","D1 sobre culto ao corpo, junto com Baudrillard.","","Confere o número do relatório mais recente antes de citar."],
+["\"Dismorfia do Snapchat\"","Conceito","D2","Termo médico pra pacientes que querem ficar iguais às próprias fotos com filtro.","D2 sobre redes e autoimagem, junto com Byung-Chul Han.",""],
+["Lei 14.819/2024","Lei","D1/D2","Cria a Política Nacional de Atenção Psicossocial nas Comunidades Escolares.","Contraste: a política existe no papel, mas a falta de psicólogos nas escolas esvazia a norma.",""],
+["CF/88, art. 196","Lei","Proposta","Saúde é direito de todos e dever do Estado.","Cobrar ação do governo na proposta.",""],
+["Noruega (2022) e França (selo \"photographie retouchée\")","Leis estrangeiras","Proposta","Exigem aviso em anúncios com fotos de corpo editadas.","Modelo pra proposta: o Congresso cria lei de sinalização de imagens editadas no Brasil.",""],
+["Body positive x publicidade fitness","Fato atual","D2","Movimento de aceitação corporal em choque com o marketing do corpo perfeito.","Mostra que o debate está vivo e atual.",""],
+["Achille Mbembe — necropolítica na saúde","Filosofia","D1/D2","O poder distribui de forma desigual quem fica exposto à doença e à morte.","Use pra falar da distribuição desigual de saneamento, vacinas e atendimento médico entre ricos e pobres.","Sob a ótica da necropolítica, de Achille Mbembe, a falta de saneamento básico nas periferias revela um Estado que decide quais vidas merecem cuidado."],
+["Jeca Tatu (Monteiro Lobato)","Literatura","Intro · D1","O caipira que parecia preguiçoso, na verdade, estava doente e abandonado pelo poder público.","Desconstrói a ideia de que a pobreza vem da preguiça. Ótimo em temas de negligência sanitária e desigualdade no acesso à saúde.","Monteiro Lobato, ao criar o Jeca Tatu, mostrou que a suposta preguiça do caipira era, na verdade, fruto da doença e do abandono, realidade que ainda persiste em regiões sem [acesso do tema]."],
+["Macunaíma (Mário de Andrade)","Literatura","Intro","O livro traz a frase \"Pouca saúde e muita saúva, os males do Brasil são\".","Abertura rápida pra temas de saúde pública e descaso histórico.","","Cita a frase do jeito certo: \"Pouca saúde e muita saúva, os males do Brasil são\"."],
+["Byung-Chul Han — positividade e desempenho","Filosofia","D1","A cobrança constante por desempenho e positividade transforma a pessoa em fiscal de si mesma.","Saúde mental, ansiedade, depressão, burnout e pressão das redes. Complementa o card de Sociedade do Cansaço nos repertórios de bolso.",""],
+["Schopenhauer — pobreza e abundância","Filosofia","D1/D2","O mesmo pêndulo serve pra contrastar quem sofre lutando pra sobreviver com quem tem tudo e ainda vive insatisfeito.","Use em temas que mostram a desigualdade no acesso à saúde, contrastando os dois lados do pêndulo.",""],
+["Daniela Arbex — Holocausto Brasileiro","Livro-reportagem","Intro · D1","Conta a história do Hospital Colônia de Barbacena (MG), onde cerca de 60 mil pessoas morreram. Muitas nem tinham doença mental: eram pobres, negras, mães solteiras ou \"indesejadas\".","Saúde mental, estigma e exclusão. Mostra que o tratamento da loucura no Brasil foi, por muito tempo, uma forma de isolar quem incomodava.","Durante o século XX, o Hospital Colônia de Barbacena, retratado por Daniela Arbex em \"Holocausto Brasileiro\", isolava os considerados indesejáveis. Na contemporaneidade, ainda persiste o estigma contra pessoas com transtornos mentais."],
+["Lei da Reforma Psiquiátrica (Lei 10.216/2001)","Lei","D1/D2 · Proposta","Também chamada Lei Paulo Delgado: trocou o modelo dos manicômios pelo cuidado em liberdade, com os CAPS (Centros de Atenção Psicossocial).","Mostra o avanço legal e a falha prática: poucos CAPS, filas e falta de profissionais. Os CAPS são um ótimo meio na proposta.",""],
+["SUS (Lei 8.080/1990)","Lei","D1/D2 · Proposta","Sistema Único de Saúde: atendimento universal, integral e gratuito, um dos maiores sistemas públicos do mundo.","Valoriza o SUS e mostra os problemas de financiamento e de acesso desigual. Na proposta, o Ministério da Saúde age por meio do SUS.",""],
+["Revolta da Vacina (1904)","Fato histórico","Intro","A vacinação obrigatória contra a varíola, liderada por Oswaldo Cruz no Rio, gerou revolta popular por falta de informação e pelo jeito autoritário da campanha.","Introdução histórica sobre vacinação, desinformação e saúde pública. Liga com o movimento antivacina atual.","Em 1904, a Revolta da Vacina mostrou como a falta de informação pode gerar resistência à saúde pública. Na contemporaneidade, ainda persiste essa desconfiança, evidenciada pela queda nas taxas de vacinação infantil."],
+["Pandemia de Covid-19","Fato histórico","Intro · D1/D2","Escancarou a desigualdade no acesso à saúde, ao saneamento e à internet, além de espalhar muita desinformação.","Funciona em saúde, educação (ensino remoto), desigualdade e fake news.",""],
+["O Alienista (Machado de Assis)","Literatura","Intro","O médico Simão Bacamarte interna quase a cidade inteira na Casa Verde, e no fim percebe que o \"anormal\" é ele.","Questiona quem define o que é normal. Bom pra saúde mental e estigma.",""],
+["Lima Barreto — Diário do Hospício","Literatura","Intro · D2","O escritor relata suas internações no hospício e a exclusão sofrida, também por ser negro e pobre.","Saúde mental cruzada com racismo e pobreza.",""],
+["Coringa (2019)","Filme","Intro","Arthur Fleck perde o acompanhamento psicológico por corte de verbas públicas e é ignorado pela sociedade até entrar em colapso.","Saúde mental, abandono do Estado e invisibilidade social.","No filme \"Coringa\", Arthur Fleck perde o acesso ao tratamento psicológico após cortes do governo. Fora da ficção, muitos brasileiros também enfrentam a falta de assistência em saúde mental."],
+["Divertida Mente 2 (2024)","Filme","Intro","A emoção Ansiedade toma conta da mente da adolescente Riley, que tenta se encaixar e dar conta de tudo.","Introdução atual sobre ansiedade na adolescência.",""],
+["Drauzio Varella — saúde que se pauta na doença", "Medicina / divulgação científica", "D1/D2", "O médico, autor de \"Estação Carandiru\", critica que a saúde brasileira se pauta na doença, e não na prevenção: o sistema trata quem já adoeceu em vez de evitar o adoecimento.", "Serve pra qualquer tema que envolva prevenção: obesidade e alimentação, vacinação, doenças crônicas, saúde mental, dependência química, sobrecarga do SUS.", "Como alerta o médico Drauzio Varella, o sistema de saúde brasileiro costuma agir depois que a doença aparece, e não antes; assim, [problema do tema] só ganha atenção quando os casos já estão graves e caros para o SUS.", ""],
+["Contágio (2011)", "Filme", "Intro · D1/D2", "Durante uma pandemia fictícia, o blogueiro Alan Krumwiede espalha que um remédio à base de forsítia cura a doença e incentiva os seguidores a desconfiar da vacina, enquanto lucra vendendo o falso tratamento.", "Vacinação, fake news sobre saúde, influenciadores que lucram com desinformação.", "Em \"Contágio\", um blogueiro lucra ao convencer seguidores de que a vacina é perigosa. Para além da tela, discursos parecidos circulam nas redes brasileiras e afastam famílias dos postos de vacinação.", ""],
+["Estamira (documentário)", "Documentário", "Intro · D1/D2", "Acompanha Estamira, mulher com transtorno mental que trabalhava no aterro sanitário de Jardim Gramacho (RJ), sem acompanhamento de saúde adequado.", "Saúde mental, gestão do lixo, catadores, invisibilidade social.", ""]
+]},
+{id:"tech",t:"Tecnologia, redes e consumo",s:"Telas na infância, IA, fake news, dados pessoais, influenciadores, consumismo, cancelamento.",r:[
+["O Dilema das Redes (2020)","Documentário","D1","Ex-funcionários de big techs explicam que as plataformas são projetadas pra viciar e prender a atenção.","Transfere a culpa do indivíduo pra empresa. Ótimo como causa no D1.",""],
+["Jonathan Haidt — A Geração Ansiosa","Psicologia social","D2","A \"infância do brincar\" foi trocada pela \"infância do celular\", e isso coincide com a alta de ansiedade e depressão entre jovens. As famílias superprotegem as crianças no mundo real e as desprotegem no virtual, entregando o celular cada vez mais cedo e sem supervisão.","D2 de consequência (saúde mental). Usa junto com O Dilema das Redes no D1 sem repetir argumento.","","Haidt é homem: \"o psicólogo\"."],
+["Toy Story 5 (2026)","Filme","Intro","Bonnie troca os brinquedos por um tablet em forma de sapo e começa a achar que está velha demais pra brincar.","Introdução sobre uso precoce de telas: a tela substitui a própria infância.","No filme \"Toy Story 5\", a pequena Bonnie troca as brincadeiras por um tablet, a ponto de questionar se ainda tem idade para brincar."],
+["Sociedade Brasileira de Pediatria","Dado / recomendação","D1","Recomenda evitar telas antes dos 2 anos e limitar a 1 hora por dia dos 2 aos 5.","D1 sobre falta de informação das famílias e tela usada como \"babá\".",""],
+["Lei 15.100/2025","Lei","Proposta","Restringe o uso de celular nas escolas públicas e privadas.","Proposta já existente que você pode ampliar (ex.: formação de professores).",""],
+["Shoshana Zuboff — A Era do Capitalismo de Vigilância","Sociologia","D1/D2","As empresas lucram coletando e prevendo o comportamento do usuário: o produto é você.","Base teórica pra IA, dados pessoais e redes.",""],
+["Guy Debord — A Sociedade do Espetáculo","Filosofia","D1","O que era vivido diretamente vira representação: as relações passam a ser mediadas por imagens.","Influenciador que não vende um produto, mas uma vida desejável.","Conforme Guy Debord, o vivido é substituído por sua representação, lógica que se materializa no influenciador digital."],
+["Thorstein Veblen — consumo conspícuo","Sociologia / economia","Intro","Gastar de forma visível pra mostrar status. O desperdício é a mensagem.","Introdução: mostra que a ostentação é antiga e só migrou da vitrine pro feed.",""],
+["Naomi Klein — Sem Logo","Ensaio","D1/D2","Desde os anos 90, as marcas pararam de vender produtos e passaram a vender identidade e estilo de vida.","Publicidade de influenciador, que parece conselho de amigo.",""],
+["Erving Goffman — A Representação do Eu na Vida Cotidiana","Sociologia","D2","A vida social é um teatro: cada um mantém uma fachada pro público e esconde os bastidores.","Endividamento pra manter aparência. O influenciador finge mostrar bastidores que também são palco.",""],
+["Adorno e Horkheimer — indústria cultural","Filosofia","D1/D2","A cultura virou mercadoria padronizada, vendida como se fosse escolha pessoal e única.","Falsa autenticidade: milhares de perfis com a mesma trend, cada um se dizendo original.",""],
+["Bauman — sociedade de consumidores","Sociologia","D1/D2","As pessoas se definem pelo que possuem, e os produtos são rapidamente substituídos e descartados.","Consumismo ligado ao impacto ambiental e à produção de lixo.",""],
+["Hannah Arendt — mentira sistemática","Filosofia","D1/D2","A mentira organizada destrói a capacidade das pessoas de distinguir fato de ficção e de julgar.","Fake news e desinformação, principalmente em ano eleitoral.",""],
+["Estudo do MIT (2018)","Dado","Fim do parágrafo","Notícias falsas se espalham bem mais rápido que as verdadeiras no Twitter (cerca de 6 vezes).","Dimensiona o problema da desinformação.",""],
+["Marco Civil da Internet (Lei 12.965/2014) e PL 2630/2020","Lei","D1/D2 · Proposta","O Marco Civil define direitos e deveres na internet; o PL 2630 trata de fake news e ainda não virou lei.","Mostra lacuna legal ou caminho pra proposta.",""],
+["LGPD (Lei 13.709/2018)","Lei","D1/D2","Lei Geral de Proteção de Dados: regula como empresas coletam e usam dados pessoais.","Proteção de dados, contraste entre lei e vazamentos.",""],
+["Caso Cambridge Analytica","Fato histórico","Intro","Dados de milhões de usuários do Facebook foram usados pra direcionar propaganda política.","Introdução sobre dados e manipulação.",""],
+["Foucault + o panóptico de Bentham","Filosofia","D1/D2","O panóptico é uma prisão em que o preso nunca sabe se está sendo vigiado, então se vigia sozinho.","Vigilância digital e cancelamento.",""],
+["1984 (George Orwell)","Literatura","Intro","Estado totalitário que vigia todos pelas teletelas (o \"Grande Irmão\"). O Ministério da Verdade altera registros e distorce o passado pra manter o poder.","Introdução sobre vigilância, pós-verdade, fake news, dados e algoritmos. Faz uma analogia entre mecanismos de controle, não diz que o Brasil é igual ao livro.","Na obra \"1984\", de George Orwell, o Ministério da Verdade reescreve o passado para manter o poder. De forma análoga, no Brasil, a disseminação de fake news distorce fatos e manipula a opinião pública."],
+["PL 2338/2023","Lei","D1/D2","Projeto do marco legal da inteligência artificial no Brasil, ainda não aprovado.","Usa o vazio legal como problema.",""],
+["Revolução Industrial e ludismo","Fato histórico","Intro","Trabalhadores ingleses quebravam máquinas com medo de perder o emprego.","Paralelo histórico pra IA e trabalho.",""],
+["Não Olhe Para Cima","Filme","Intro","A sociedade ignora o alerta da ciência sobre um cometa e prefere o espetáculo.","Desinformação, negacionismo.",""],
+["Byung-Chul Han — Sociedade da Transparência","Filosofia","D1/D2","A exigência de expor tudo cria uma vigilância de todos sobre todos.","Cultura do cancelamento, exposição nas redes.",""],
+["CF/88, art. 5º, IV e IX","Lei","D1/D2","Garante a liberdade de expressão e de manifestação do pensamento.","Cancelamento x liberdade de expressão.",""],
+["Michel Foucault — poder e discurso","Filosofia","D1/D2","Quem tem poder decide quais discursos circulam e quais vozes são ouvidas. O que não aparece no discurso dominante fica invisível.","Use pra discutir por que certos problemas sociais quase não viram notícia. Fala de invisibilidade, sem afirmar que existe uma conspiração.","Segundo Michel Foucault, as relações de poder determinam quais discursos ganham espaço, o que ajuda a explicar a baixa visibilidade de [problema do tema] na mídia."],
+["Gustave Le Bon — Psicologia das Multidões","Psicologia social","D1/D2","Dentro de uma multidão, o indivíduo perde parte do senso crítico e faz coisas que não faria sozinho.","As redes são a multidão de hoje: linchamento virtual, cancelamento, discurso de ódio e compartilhamento de fake news em massa.","Conforme Gustave Le Bon, o indivíduo inserido na multidão age de forma que não agiria sozinho, comportamento que se repete nas redes sociais em casos de [tema]."],
+["Efeito manada","Conceito","D1/D2","No grupo, as pessoas imitam o comportamento dos outros sem refletir, só porque todo mundo está fazendo.","Trends perigosas, consumo por impulso, apostas, desinformação. Combina com Le Bon.","","O termo \"efeito manada\" não é do Nietzsche. Se quiser um autor, Nietzsche critica a \"moral de rebanho\" (as pessoas seguem valores do grupo sem questionar). Cita esse conceito, não a frase."],
+["Anna Lembke — Nação Dopamina","Psiquiatria","D2","A busca repetida por recompensas rápidas (curtidas, vídeos curtos, apostas) desregula o prazer e favorece a compulsão e a dependência.","Ótimo pra consequência no D2: vício em telas, apostas online, rolagem infinita.","De acordo com a psiquiatra Anna Lembke, a busca constante por recompensas imediatas favorece comportamentos compulsivos, o que explica a dependência de jovens em [tela/apostas]."],
+["Pierre Lévy — o \"novo dilúvio\" (Cibercultura)","Filosofia","D1/D2","A internet gerou uma inundação de informação. O desafio deixou de ser ter acesso e passou a ser selecionar e checar o que é verdade.","Fake news, polarização, excesso de informação. Mostra que mais informação não significa mais conhecimento.","O filósofo Pierre Lévy compara a cibercultura a um \"novo dilúvio\" de informações; nesse cenário, muitos usuários não conseguem distinguir fatos de [desinformação do tema]."],
+["Ray Kurzweil — singularidade tecnológica","Tecnologia / futurismo","Intro · D1","Pelo crescimento exponencial da tecnologia, as máquinas poderiam um dia superar a capacidade humana.","Introdução de temas sobre IA e substituição do trabalho humano.",""],
+["Leandro Karnal — energia pro que vale a pena","Historiador","D2","Defende não gastar energia com toda briga e valorizar a escuta e o silêncio reflexivo.","Polarização e brigas nas redes. Silêncio reflexivo não é o mesmo que se omitir diante de injustiça.",""],
+["Eli Pariser — O Filtro Invisível (bolhas)","Ativismo / tecnologia","D1/D2","Os algoritmos mostram só o que combina com o que você já pensa, criando \"bolhas\" em que a pessoa nunca vê opiniões diferentes.","O melhor repertório pra polarização e fake news: a bolha reforça certezas e dificulta o diálogo.","Segundo Eli Pariser, os algoritmos criam \"bolhas\" que expõem o usuário apenas a conteúdos semelhantes às suas crenças, o que intensifica a polarização no Brasil."],
+["Pós-verdade","Conceito","Intro · D1","Palavra do ano do Dicionário Oxford em 2016: quando emoções e crenças pessoais pesam mais que os fatos na formação da opinião.","Fake news, negacionismo, eleições. Ótimo como conceito na introdução.","O termo \"pós-verdade\", eleito palavra do ano pelo Dicionário Oxford em 2016, diz respeito a contextos em que as emoções influenciam mais a opinião pública do que os fatos."],
+["Byung-Chul Han — Infocracia","Filosofia","D1/D2","O excesso de informação nas redes destrói o debate racional: a democracia vira uma disputa de informação e atenção.","Fake news, eleições, crise da democracia.",""],
+["Jürgen Habermas — esfera pública","Filosofia","D1/D2","A democracia depende de um espaço de debate público racional, onde os cidadãos discutem e formam opinião.","Mostra que as redes, com bolhas e ódio, deterioram esse espaço de debate.",""],
+["Karl Popper — paradoxo da tolerância","Filosofia","D1/D2","Se uma sociedade tolera tudo, inclusive os intolerantes, a própria tolerância acaba destruída.","Discurso de ódio, liberdade de expressão x limites, regulação das redes.","Conforme o paradoxo da tolerância, de Karl Popper, tolerar a intolerância ilimitadamente leva à destruição da própria tolerância; por isso, o discurso de ódio nas redes não pode ser tratado como mera opinião."],
+["Sherry Turkle — Alone Together","Psicologia","D2","Estamos sempre conectados, mas cada vez mais sozinhos: a tecnologia substitui a conversa real.","Solidão, relações superficiais, saúde mental de jovens.",""],
+["Nicholas Carr — A Geração Superficial","Jornalismo","D2","O uso intenso da internet muda o cérebro: ficamos mais dispersos e com dificuldade de ler e pensar com profundidade.","Atenção, leitura, vídeos curtos, desempenho escolar.",""],
+["O Show de Truman (1998)","Filme","Intro","Truman descobre que toda a vida dele é um reality show assistido pelo mundo inteiro.","Exposição, vigilância, espetáculo e privacidade.",""],
+["Ela (Her, 2013)","Filme","Intro","Um homem solitário se apaixona por uma inteligência artificial.","Solidão na era digital, relações com IA.",""],
+["Lei Carolina Dieckmann (12.737/2012)","Lei","D1/D2","Tipificou crimes informáticos, como invadir dispositivos pra roubar dados.","Crimes digitais, vazamento de dados e de imagens íntimas.",""],
+["ECA Digital (Lei 15.211/2025)","Lei","Proposta","Estabelece regras de proteção de crianças e adolescentes em ambientes digitais (verificação de idade, controle parental, limites à publicidade).","Telas na infância, adultização, redes. Mostra que a regulação chegou e precisa ser fiscalizada.","","Lei recente: confere o número e os pontos principais antes da prova."],
+["Adolescência (Netflix, 2025)", "Série", "Intro · Conclusão", "Minissérie britânica gravada em plano-sequência. Jamie Miller, de 13 anos, é preso acusado de matar uma colega, e a investigação revela que ele foi radicalizado dentro do próprio quarto por conteúdos misóginos nas redes, sem que os adultos percebessem.", "Regulamentação das redes, proteção de menores, discurso de ódio, misoginia, omissão familiar. Também dá pra retomar a série na conclusão, fechando o texto em círculo.", "A série \"Adolescência\" mostra um garoto de 13 anos que se radicaliza pela internet sem que a família perceba. Situação semelhante ameaça adolescentes brasileiros, expostos a conteúdos de ódio em plataformas com pouca regulação.", ""],
+["Umberto Eco — \"legião de imbecis\"", "Semiótica / literatura", "D1/D2", "O semiólogo italiano disse que as redes sociais deram o direito à palavra a uma \"legião de imbecis\" que antes só falavam num bar, depois de uma taça de vinho, e agora têm o mesmo alcance de um ganhador do Nobel.", "Fake news, discurso de ódio, desinformação científica, cancelamento, influenciadores, educação midiática. Mostra a falta de filtro entre informação verificada e opinião sem base.", "Ao criticar a \"legião de imbecis\" que ganhou voz nas redes, Umberto Eco apontou a falta de filtro entre opinião e informação checada, problema que favorece a circulação de boatos no Brasil.", ""]
+]},
+{id:"edu",t:"Educação",s:"IA substituindo professores, desvalorização do professor, educação inclusiva.",r:[
+["Paulo Freire — educação como formação crítica","Educação","D1","Educar é diálogo e construção de consciência, não só transmitir informação.","Tese: a IA pode informar, mas não substitui o professor na formação crítica e afetiva.",""],
+["Vygotsky — mediação","Psicologia","D1/D2","A aprendizagem acontece na interação social, mediada por alguém mais experiente.","Papel humano e afetivo do professor.",""],
+["Sócrates — maiêutica","Filosofia","Intro · D1","Ensinar é fazer perguntas que levam o aluno a chegar sozinho ao conhecimento.","Pensamento crítico x resposta pronta da IA.",""],
+["Yuval Harari","História / ensaio","D2","A IA pode concentrar poder e transformar profundamente o trabalho e a sociedade.","Riscos sociais da IA.",""],
+["CF/88, art. 205","Lei","D1","Educação é direito de todos e dever do Estado e da família.","Base jurídica do D1 em temas de educação.",""],
+["LDB (Lei 9.394/1996)","Lei","D1/D2","Lei de Diretrizes e Bases da Educação Nacional.","Contraste entre o que a lei prevê e a realidade.",""],
+["Lei 14.533/2023","Lei","Proposta","Institui a Política Nacional de Educação Digital.","Proposta: ampliar a formação digital de alunos e professores.",""],
+["Lei do Piso (11.738/2008) e PNE","Lei","D1/D2","Piso salarial nacional do magistério e metas do Plano Nacional de Educação.","Desvalorização do professor: o piso existe, mas a carreira continua pouco atrativa.",""],
+["UNESCO — Relatório GEM 2023 e guia de IA generativa","Documento internacional","D1/D2","A tecnologia na educação só dá certo quando apoia o professor, e não quando tenta substituí-lo.","Sustenta a tese equilibrada: IA como ferramenta.",""],
+["Cetic.br — TIC Educação","Dado","Fim do parágrafo","Pesquisa sobre uso de tecnologia nas escolas brasileiras.","Dimensiona a desigualdade de acesso.",""],
+["Plataforma Avamec (MEC)","Política pública","Proposta","Ambiente de cursos online do MEC pra formação de professores.","Meio concreto na proposta de intervenção.",""],
+["Sociedade dos Poetas Mortos","Filme","Intro","Um professor transforma os alunos ao estimular o pensamento crítico.","Introdução sobre o papel insubstituível do professor.",""],
+["Escritores da Liberdade","Filme","Intro","Professora transforma uma turma vulnerável por meio da escrita.","Valorização do professor.",""],
+["Admirável Mundo Novo (Aldous Huxley)","Literatura","Intro","Sociedade controlada pelo conforto, pela tecnologia e pelo prazer imediato.","Riscos da dependência tecnológica.",""],
+["Frankenstein (Mary Shelley)","Literatura","Intro","A criação escapa do controle do criador.","Introdução sobre IA.",""],
+["Declaração de Salamanca (1994)","Documento internacional","D1/D2","Define princípios da educação inclusiva.","Inclusão de pessoas com deficiência e neurodivergentes na escola.",""],
+["Antonio Candido — O Direito à Literatura","Crítica literária","D1/D2","A literatura é uma necessidade humana e, por isso, um direito de todos.","Acesso à leitura e à cultura.",""],
+["Darcy Ribeiro — \"a crise da educação é um projeto\"","Antropologia","D1","Em conferência na SBPC, em 1977, ele denunciou que a precariedade da educação no Brasil não é acidente: é resultado de escolhas políticas que mantêm a desigualdade.","Use quando a causa é falta de investimento na escola pública. Transforma o problema em escolha política, o que fortalece a crítica.","Segundo Darcy Ribeiro, a crise da educação no Brasil não é uma crise, mas um projeto; nesse sentido, o baixo investimento em [aspecto do tema] mantém a desigualdade educacional."],
+["Parágrafo-modelo com Paulo Freire","Modelo","D1/D2","Além disso, a escola pouco debate o problema. A crítica de Paulo Freire à educação bancária ajuda a compreender esse limite: quando o ensino se restringe à memorização para exames, reduz-se o espaço para reflexão. Assim, a formação crítica fica prejudicada, dificultando a transformação do cenário.","Troca \"o problema\" pelo tema do dia e acrescenta um exemplo concreto do Brasil.",""],
+["Theodor Adorno — Educação após Auschwitz","Filosofia","D1/D2 · Proposta","A principal função da educação é impedir que a barbárie se repita, formando pessoas capazes de refletir e resistir à violência.","Educação contra o preconceito, a violência e o discurso de ódio. Ótimo pra justificar ações nas escolas na proposta.","Segundo Theodor Adorno, a exigência primeira da educação é que Auschwitz não se repita; nesse sentido, a escola deve atuar na prevenção de [violência ou preconceito do tema]."],
+["Pierre Bourdieu — violência simbólica","Sociologia","D1/D2","Dominação que acontece de forma \"invisível\": por meio da linguagem, da cultura e das normas, o dominado passa a aceitar a desigualdade como natural.","Escola que desvaloriza a cultura do aluno pobre, preconceito linguístico, machismo naturalizado.",""],
+["Lei 10.639/2003 e Lei 11.645/2008","Lei","D1/D2 · Proposta","Tornam obrigatório o ensino de história e cultura afro-brasileira e indígena nas escolas.","Racismo, apagamento indígena, educação antirracista. Mostra que a lei existe mas é pouco aplicada.",""],
+["INAF — analfabetismo funcional","Dado","Fim do parágrafo","O Indicador de Alfabetismo Funcional aponta que cerca de 3 em cada 10 brasileiros têm dificuldade de entender textos simples.","Leitura, desinformação, educação. Mostra que saber ler não é o mesmo que compreender.","","Confere o percentual da edição mais recente."],
+["Pisa (OCDE)","Dado","Fim do parágrafo","Avaliação internacional em que o Brasil fica abaixo da média da OCDE em leitura, matemática e ciências.","Dimensiona a qualidade da educação.",""],
+["Fahrenheit 451 (Ray Bradbury)","Literatura","Intro","Numa sociedade futura, os bombeiros queimam livros e as pessoas vivem distraídas por telas gigantes.","Leitura, censura, alienação pelo entretenimento.",""],
+["Malala Yousafzai", "Fato / personalidade", "Intro", "Jovem paquistanesa baleada pelo Talibã por defender a educação de meninas. Ganhou o Nobel da Paz em 2014.", "Educação como direito: evasão escolar, educação de meninas, trabalho infantil, analfabetismo, valorização do professor.", "Malala Yousafzai, que enfrentou o Talibã pelo direito de estudar, resumiu na ONU o poder da educação em uma criança, um professor, um livro e uma caneta; cada estudante que deixa a escola perde exatamente essas ferramentas.", ""]
+]},
+{id:"incl",t:"Inclusão, desigualdade e grupos vulnerabilizados",s:"Pessoas com deficiência, neurodivergentes, mulheres, idosos, população negra.",r:[
+["Lei Brasileira de Inclusão (Lei 13.146/2015)","Lei","D1/D2","Estatuto da Pessoa com Deficiência: garante acessibilidade e igualdade de oportunidades.","O repertório mais direto pra deficiência. Mostra a lei x falta de sites acessíveis, braille e audiodescrição.",""],
+["Convenção da ONU sobre os Direitos das Pessoas com Deficiência (2006)","Documento internacional","D1/D2","Tem status de emenda constitucional no Brasil.","Compromisso internacional não cumprido.",""],
+["CF/88, art. 23","Lei","D1","Proteger as pessoas com deficiência é dever do Estado.","Base jurídica em temas de deficiência.",""],
+["Lei Berenice Piana (12.764/2012)","Lei","D1/D2","Política Nacional de Proteção dos Direitos da Pessoa com Autismo.","Inclusão de neurodivergentes.",""],
+["Amartya Sen — abordagem das capacidades","Economia / filosofia","D1/D2","Justiça não é só renda: é a liberdade real de cada um exercer suas funções na sociedade.","Defender acessibilidade como condição de liberdade.",""],
+["John Rawls — véu da ignorância","Filosofia","D1/D2","Uma sociedade justa é a que a gente desenharia sem saber que posição vai ocupar nela.","Argumento de justiça pra inclusão.",""],
+["Norberto Bobbio — A Era dos Direitos","Filosofia política","D1/D2","O desafio hoje não é criar direitos, é garanti-los na prática.","Lei no papel x realidade.",""],
+["Kant — dignidade humana","Filosofia","D2 · Conclusão","A pessoa é um fim em si mesma, nunca só um meio.","Fecha argumento sobre dignidade.",""],
+["Capacitismo","Conceito","Tese","Preconceito estrutural contra pessoas com deficiência.","Dá nome ao problema na tese e mostra repertório atualizado.",""],
+["Ensaio sobre a Cegueira (José Saramago)","Literatura","Intro","Uma epidemia de cegueira vira metáfora da indiferença social.","Introdução potente sobre deficiência visual.","","Usa com cuidado pra cegueira não soar como algo negativo."],
+["Louis Braille / Helen Keller","Fatos históricos","Intro","Braille criou o sistema de leitura tátil; Keller, surda e cega, lutou por direitos.","Marcos históricos de autonomia.",""],
+["Extraordinário / Como Estrelas na Terra","Filmes","Intro","Criança com diferença facial na escola / criança com dislexia incompreendida.","Introdução sobre inclusão escolar.",""],
+["Lei Maria da Penha (11.340/2006) e Lei do Feminicídio (13.104/2015)","Lei","D1/D2","Combatem a violência doméstica e tornam o feminicídio crime qualificado.","Violência contra a mulher: leis fortes, aplicação falha.",""],
+["Atlas da Violência (Ipea/FBSP)","Dado","Fim do parágrafo","Reúne os números de homicídios e feminicídios no Brasil.","Dimensiona a violência.",""],
+["Simone de Beauvoir — O Segundo Sexo","Filosofia","D1","\"Não se nasce mulher, torna-se\": o papel feminino é construído socialmente.","Machismo estrutural como causa.",""],
+["Convenção de Belém do Pará (1994)","Documento internacional","D1/D2","Tratado da OEA contra a violência contra a mulher.","Compromisso internacional.",""],
+["Estatuto da Pessoa Idosa (Lei 10.741/2003)","Lei","D1/D2","Garante prioridade de atendimento e pune abandono e maus-tratos. Mudou de nome em 2022 (era Estatuto do Idoso).","Usar o nome atualizado mostra repertório vivo.",""],
+["IBGE — envelhecimento populacional","Dado","Intro · Fim do parágrafo","O Brasil envelhece muito rápido, antes de resolver desigualdade e previdência.","Urgência: o país envelheceu antes de ficar rico.",""],
+["Norbert Elias — A Solidão dos Moribundos","Sociologia","D2","A sociedade moderna afasta a velhice e a morte do convívio e as manda pra hospitais e asilos.","Abandono afetivo do idoso, não só material.",""],
+["Coco (2017) / Nebraska","Filmes","Fechamento","O morto só desaparece quando ninguém lembra dele / relação entre pai idoso e filho.","Memória e valor dos mais velhos.",""],
+["Silvio Almeida — Racismo Estrutural","Direito / filosofia","D1","Distingue racismo individual, institucional e estrutural, quando ele faz parte da organização da sociedade.","Muda a pergunta de \"quem é racista?\" pra \"como as instituições funcionam?\" e evita culpar só indivíduos.",""],
+["Lei de Cotas (12.711/2012, atualizada em 2023) e Lei 7.716/1989","Lei","D2 · Proposta","Reserva vagas em instituições federais / define o crime de racismo.","Política afirmativa com resultado comprovado: base pra propor ampliação.",""],
+["Djamila Ribeiro — Lugar de Fala","Filosofia","Proposta","A posição social de cada um define o quanto sua voz é ouvida no debate público.","Justifica dar protagonismo a quem é atingido na proposta.","","Não significa \"só quem viveu pode falar\". O corretor percebe esse erro."],
+["Gilberto Freyre — Casa-Grande & Senzala","Sociologia","D1","Defendeu a ideia de uma convivência harmoniosa entre as raças, a \"democracia racial\", hoje muito criticada.","Usa em contraste com Florestan pra mostrar senso crítico.",""],
+["Florestan Fernandes","Sociologia","D1/D2","Mostrou que a democracia racial é um mito: depois da abolição, a população negra foi excluída estruturalmente.","Racismo estrutural e desigualdade racial.",""],
+["Jessé Souza — A Elite do Atraso / A Ralé Brasileira","Sociologia","D1","A desigualdade brasileira é estrutural: vem do legado da escravidão e da reprodução de privilégios de geração em geração.","Use pra rebater a ideia de que a pobreza é culpa só do indivíduo (\"não estudou porque não quis\").","Segundo o sociólogo Jessé Souza, a desigualdade no Brasil é herança da escravidão e se reproduz socialmente, o que invalida explicações que culpam apenas o indivíduo por [problema]."],
+["Hannah Arendt — indiferença à miséria","Filosofia","D2","A suspensão do pensamento crítico faz as pessoas aceitarem práticas nocivas como normais.","Por aproximação, ajuda a criticar a indiferença do dia a dia diante da miséria (gente dormindo na rua e ninguém reage).","","Banalidade do mal não significa só \"o mal se repete\". É a ausência de reflexão diante dele."],
+["Arquitetura hostil e aporofobia","Conceito","D1/D2","Bancos com divisórias, pedras embaixo de viadutos e outras barreiras afastam pessoas pobres do espaço público. Aporofobia é a aversão aos pobres.","Liga decisões urbanas ao direito à cidade e à exclusão da população em situação de rua.","A chamada arquitetura hostil, como bancos segmentados em praças, revela a aporofobia presente nas cidades brasileiras, que expulsa a população em situação de rua dos espaços públicos."],
+["O Cortiço (Aluísio Azevedo)","Literatura","Intro","Retrata a pobreza coletiva e as condições precárias de moradia nos cortiços do Rio no século XIX.","Introdução histórica sobre moradia e segregação urbana.",""],
+["Bauman — o sonho da pureza","Sociologia","D1","A ordem social classifica quem está \"fora do lugar\" como indesejável. A diferença vira defeito e justificativa pra excluir.","Racismo, xenofobia, homofobia, capacitismo, etarismo.","Para Zygmunt Bauman, o \"sonho da pureza\" leva a sociedade a tratar como indesejável quem foge ao padrão, lógica que sustenta a exclusão de [grupo]."],
+["Judith Bardwick — zona de conforto","Psicologia","D1/D2","A segurança do que já é conhecido faz as pessoas recusarem mudanças e desafios.","Explica por que padrões discriminatórios continuam: mudar exige sair da zona de conforto.",""],
+["\"É mais fácil desintegrar um átomo do que um preconceito\"","Frase","Intro · Conclusão","A comparação mostra o quanto a discriminação está enraizada na cultura.","Abre ou fecha argumento sobre preconceito.","","A frase é atribuída a Einstein, mas a autoria não é confirmada. Prefere \"frase atribuída a Einstein\" ou paráfrase."],
+["Rousseau — \"prefiro ser um homem de paradoxos\"","Filosofia","Conclusão","\"Prefiro ser um homem de paradoxos do que um homem de preconceitos.\"","Defende revisar certezas e combater a conivência com a discriminação.","","Confere a redação exata antes de usar aspas. Paráfrase bem ligada ao tema é mais segura."],
+["Roberto DaMatta — jeitinho brasileiro / \"Você sabe com quem está falando?\"","Antropologia","D1/D2","O brasileiro usa o jeitinho pra burlar regras, e quem tem poder usa a frase \"você sabe com quem está falando?\" pra se colocar acima da lei.","Privilégios, corrupção, desigualdade perante a lei, trânsito.",""],
+["Lilia Schwarcz — Sobre o Autoritarismo Brasileiro","História / antropologia","D1","O autoritarismo, o racismo e a desigualdade de hoje têm raízes no passado escravocrata e colonial do país.","Introdução histórica e D1 de qualquer tema ligado a racismo, violência e desigualdade.",""],
+["Lélia Gonzalez — Racismo e Sexismo na Cultura Brasileira","Filosofia / antropologia","D1/D2","A mulher negra sofre dupla opressão, de raça e de gênero, e é colocada nos lugares mais baixos da sociedade.","Violência contra a mulher negra, trabalho doméstico, desigualdade salarial.",""],
+["Interseccionalidade (Kimberlé Crenshaw)","Conceito","D1/D2","As opressões se cruzam: ser mulher, negra e pobre ao mesmo tempo gera discriminações que não aparecem quando analisadas separadamente.","Use pra mostrar que um grupo dentro do grupo sofre mais (ex.: mulheres negras no feminicídio).",""],
+["Abdias do Nascimento — O Genocídio do Negro Brasileiro","Ativismo / sociologia","D1/D2","Denuncia que o Brasil promoveu a exclusão sistemática da população negra, desmentindo a democracia racial.","Racismo estrutural, violência policial contra jovens negros.",""],
+["Conceição Evaristo — escrevivência","Literatura","Intro · D2","Escrita a partir da vivência da mulher negra, que dá voz a quem foi silenciado na literatura.","Representatividade, apagamento, racismo.",""],
+["Lei Áurea (1888) sem reparação","Fato histórico","Intro","A abolição libertou os escravizados, mas sem terra, emprego, educação ou qualquer política de integração.","Introdução histórica \"de herança\" pra racismo e desigualdade.","Em 1888, a Lei Áurea aboliu a escravidão sem garantir qualquer política de integração aos libertos. Na contemporaneidade, ainda persiste essa exclusão, evidenciada pela desigualdade racial no mercado de trabalho."],
+["Estatuto da Igualdade Racial (Lei 12.288/2010)","Lei","D1/D2","Garante à população negra igualdade de oportunidades e combate à discriminação.","Base jurídica pra racismo.",""],
+["Michael Sandel — A Tirania do Mérito","Filosofia","D1/D2","A meritocracia faz parecer que cada um tem o que merece, escondendo que as pessoas não partem do mesmo lugar.","Desigualdade, educação, vestibular, cotas.","","Combina com Bourdieu e Jessé Souza."],
+["Lei 14.611/2023 — igualdade salarial","Lei","D1/D2","Obriga salário igual pra homens e mulheres que fazem o mesmo trabalho.","Desigualdade de gênero no trabalho: lei nova, realidade ainda desigual.",""],
+["Simone de Beauvoir — A Velhice", "Filosofia", "D1/D2", "A sociedade trata o idoso como alguém sem valor quando ele deixa de ser produtivo.", "Etarismo e abandono de idosos, inclusive no mercado de trabalho. Combina com Norbert Elias.", "Em \"A Velhice\", Simone de Beauvoir mostra que uma sociedade que só valoriza quem produz passa a enxergar o idoso como um fardo, lógica que ajuda a explicar o etarismo no mercado de trabalho.", ""],
+["Philippe Ariès — História Social da Criança e da Família","História","D1/D2","A infância como fase protegida é uma construção moderna; antes, a criança era tratada como um adulto em miniatura.","Trabalho infantil, adultização nas redes, perda da infância.",""],
+["Capitães da Areia (Jorge Amado)","Literatura","Intro","Meninos abandonados vivem nas ruas de Salvador, roubando pra sobreviver e ignorados pelo Estado.","Infância abandonada, situação de rua, abandono estatal.",""],
+["Marco Legal da Primeira Infância (Lei 13.257/2016)","Lei","Proposta","Define políticas públicas pra crianças de 0 a 6 anos, fase decisiva do desenvolvimento.","Telas na infância, educação infantil, negligência familiar.",""],
+["Lei 14.811/2024 — bullying como crime","Lei","D1/D2","Incluiu o bullying e o cyberbullying no Código Penal.","Violência escolar, saúde mental de jovens, redes.",""],
+["Parasita (2019)","Filme","Intro","Uma família pobre se infiltra na casa de uma família rica, mostrando o abismo entre as classes.","Desigualdade social e moradia.",""],
+["Estrelas Além do Tempo (2016)","Filme","Intro","Matemáticas negras da NASA enfrentam racismo e machismo pra trabalhar na corrida espacial.","Mulheres na ciência, racismo, desigualdade de gênero.",""],
+["A Hora da Estrela (Clarice Lispector)","Literatura","Intro","Macabéa, migrante nordestina no Rio, vive invisível, pobre e sem consciência da própria condição.","Invisibilidade social, migração, xenofobia contra nordestinos.",""],
+["Adela Cortina — Aporofobia", "Filosofia", "D1/D2", "A filósofa espanhola criou o termo \"aporofobia\": a rejeição dirigida a quem parece não ter nada a oferecer em troca, ou seja, aos pobres.", "População em situação de rua, arquitetura hostil, preconceito contra a pobreza. Combina com o card de arquitetura hostil.", "O conceito de \"aporofobia\", da filósofa Adela Cortina, ajuda a entender por que a sociedade tolera medidas que expulsam os mais pobres dos espaços públicos: a rejeição recai sobre quem parece não ter nada a oferecer.", ""],
+["Padre Júlio Lancellotti e a Lei 14.489/2022", "Fato / personalidade", "Intro · D1/D2", "O padre, conhecido pelo trabalho com a população de rua em SP, quebrou a marretadas pedras colocadas sob um viaduto pra impedir que pessoas dormissem ali. O episódio deu nome à lei que proíbe a arquitetura hostil.", "População em situação de rua, aporofobia, direito à cidade.", "O gesto do padre Júlio Lancellotti, que destruiu pedras colocadas sob um viaduto paulistano para impedir que pessoas dormissem ali, expôs como a exclusão da população de rua é planejada na própria cidade.", ""],
+["Política Nacional para a População em Situação de Rua (Decreto 7.053/2009)", "Lei", "D1/D2", "Reconhece as pessoas em situação de rua como cidadãs e garante acesso a saúde, assistência social, educação e moradia.", "Use no afastamento entre teoria e prática: a política existe, mas os abrigos não dão conta da demanda.", "Embora a Política Nacional para a População em Situação de Rua, de 2009, assegure acesso a moradia e saúde, a falta de vagas em abrigos mostra que esse direito ainda não saiu do papel.", ""]
+]},
+{id:"estado",t:"Estado, política e cidadania",s:"Omissão estatal, participação política, democracia e padrões sociais.",r:[
+["John Locke","Filosofia","D1","O governo existe pra proteger os direitos naturais: vida, liberdade e propriedade. Se não cumpre, perde a legitimidade.","Omissão estatal em qualquer tema.","Segundo Locke, o Estado tem o dever de garantir os direitos dos cidadãos, função negligenciada quando..."],
+["Thomas Hobbes — Leviatã","Filosofia","D1","As pessoas abrem mão de parte da liberdade em troca de segurança. Quando o Estado se omite, quebra esse contrato.","Violência e segurança pública.",""],
+["Rousseau — O Contrato Social","Filosofia","D1","O governo deve agir segundo a \"vontade geral\", o bem comum.","Estado que não serve à coletividade.",""],
+["Gilberto Dimenstein — O Cidadão de Papel","Jornalismo","D1","Os direitos existem na lei, mas não chegam à vida real das pessoas.","O mais direto pra omissão estatal.",""],
+["José Murilo de Carvalho — Cidadania no Brasil","História","Intro · D1","No Brasil, os direitos vieram \"de cima pra baixo\", sem participação popular, por isso a cidadania é frágil.","Contexto histórico da falha do Estado.",""],
+["Achille Mbembe — necropolítica","Filosofia","D1/D2","O Estado decide quem é protegido e quem é deixado à própria sorte.","Violência e desigualdade. Tema pesado, usa com cuidado.",""],
+["Rui Barbosa (adaptando Aristóteles)","Direito","Proposta","Tratar desigualmente os desiguais, na medida em que se desigualam.","Justifica políticas afirmativas na proposta.",""],
+["Platão — quem não participa é governado pelos piores","Filosofia","Intro · D1","Quem se afasta da política acaba sendo governado por maus governantes.","Participação cidadã, fiscalização do poder, abstenção eleitoral.","","A frase é atribuída a Platão, mas sem fonte exata. Usa como paráfrase: \"ideia atribuída a Platão\"."],
+["Bertolt Brecht — o analfabeto político","Literatura / teatro","D1/D2","Critica a pessoa que se diz neutra e não participa: a passividade beneficia quem lucra com os problemas coletivos.","Omissão da população, manipulação política, desinteresse pela política.","","O texto \"O analfabeto político\" é muito atribuído a Brecht, mas a autoria é contestada. Prefere paráfrase."],
+["Democracia ateniense","Fato histórico","Intro","A democracia de Atenas excluía mulheres, escravizados e estrangeiros da cidadania.","Introdução por contraste: questiona quem realmente participa das decisões hoje.","Na Atenas antiga, a democracia excluía mulheres, escravizados e estrangeiros. Embora o Brasil tenha ampliado o direito ao voto, [grupo] ainda é sub-representado nos espaços de decisão."],
+["Pierre Bourdieu — habitus","Sociologia","D1/D2","O habitus é o conjunto de jeitos de pensar e agir que a pessoa aprende socialmente e passa a achar natural.","Explica padrões naturalizados e a reprodução de desigualdades. Na polarização, mostra como cada grupo reproduz sua forma de ver o mundo.","","Não confunde habitus com violência simbólica. São conceitos diferentes do mesmo autor."],
+["Durkheim — anomia e integração","Sociologia","D1/D2","Normas e instituições organizam a vida coletiva. Anomia é o enfraquecimento dessa regulação social, não só a falta de política pública.","Violência, abandono institucional, falhas na garantia de direitos.",""],
+["Sérgio Buarque — cordialidade e nepotismo","Sociologia","D1","O homem cordial leva as relações pessoais pra vida pública.","Exemplo concreto: nepotismo, quando o político emprega parentes no governo.","","Cordialidade não é gentileza. Vem de coração: agir pelo afeto, não pela regra."],
+["Montesquieu — O Espírito das Leis","Filosofia","D1/D2","Defende a separação entre Executivo, Legislativo e Judiciário, pra que um poder limite o outro e ninguém abuse.","Democracia, corrupção, fiscalização do poder, ataques às instituições.",""],
+["Ulysses Guimarães e a Constituição Cidadã (1988)","Fato histórico","Intro","Ao promulgar a Constituição, Ulysses disse ter \"ódio e nojo à ditadura\". A Carta marcou a volta da democracia e ampliou direitos.","Introdução histórica \"contraste positivo\": a Constituição avançou, mas os direitos ainda não chegaram a todos.",""],
+["Ainda Estou Aqui (2024)","Filme","Intro","Eunice Paiva luta pela verdade depois que o marido, o ex-deputado Rubens Paiva, é preso e desaparece na ditadura. Ganhou o Oscar de filme internacional.","Memória, democracia, direitos humanos, violência do Estado. Repertório muito atual.","No filme \"Ainda Estou Aqui\", Eunice Paiva busca respostas sobre o desaparecimento do marido durante a ditadura militar. Fora da ficção, a preservação da memória histórica ainda é um desafio no Brasil."],
+["Millôr Fernandes — cidadania de fachada", "Literatura / humor", "Intro · D1/D2", "O escritor e humorista ironizou que, num país sem sombra de cidadania, \"cidadão\" significa apenas habitante de cidade grande.", "Direitos só no papel: moradia, mobilidade, saneamento, segurança, acesso à justiça, internet. Frase curta pra mostrar a distância entre ser chamado de cidadão e ser tratado como um.", "A ironia de Millôr Fernandes, para quem \"cidadão\" no Brasil seria só quem mora em cidade grande, ajuda a ver a distância entre o título de cidadão e o acesso real a direitos como [direito do tema].", ""]
+]},
+{id:"viol",t:"Violência, segurança e sistema prisional",s:"Violência urbana, polícia, armas, encarceramento.",r:[
+["Max Weber — monopólio legítimo da violência","Sociologia","D1","O Estado é quem detém o uso legítimo da força num território. Quando ele falha, outros grupos (milícias, facções) ocupam esse espaço.","Violência urbana, crime organizado, áreas dominadas por facções.","Segundo Max Weber, o Estado detém o monopólio legítimo da violência; entretanto, em diversas comunidades brasileiras, facções e milícias assumem esse papel diante da ausência estatal."],
+["Loïc Wacquant — As Prisões da Miséria","Sociologia","D1/D2","O Estado substituiu políticas sociais por punição: prende mais, sobretudo pobres e negros, em vez de combater as causas da violência.","Encarceramento em massa e seletividade penal. Brasil tem uma das maiores populações carcerárias do mundo.",""],
+["Massacre do Carandiru (1992) / Estação Carandiru","Fato histórico","Intro","111 presos foram mortos pela polícia na Casa de Detenção de SP. Drauzio Varella relatou a vida no presídio no livro \"Estação Carandiru\".","Sistema prisional, violência policial, direitos humanos.",""],
+["Cidade de Deus (2002)","Filme","Intro","Mostra o crescimento do tráfico numa comunidade do Rio e como jovens são empurrados pro crime pela falta de oportunidade.","Violência urbana, juventude periférica, ausência do Estado.",""],
+["Anuário Brasileiro de Segurança Pública (FBSP)","Dado","Fim do parágrafo","Reúne os números de mortes violentas, letalidade policial e violência contra a mulher no Brasil.","Dimensiona qualquer tema de violência. Mostra também que a maioria das vítimas é jovem e negra.","","Confere os números da edição mais recente."],
+["Estatuto do Desarmamento (Lei 10.826/2003)","Lei","D1/D2","Regula o registro, a posse e o porte de armas de fogo.","Violência armada e debate sobre armas.",""],
+["Achille Mbembe e a juventude negra","Filosofia","D1/D2","A necropolítica ajuda a entender por que os jovens negros das periferias são as maiores vítimas da violência letal.","Combina com o Anuário e o Atlas da Violência.",""]
+]},
+{id:"trab",t:"Trabalho e economia",s:"Uberização, trabalho análogo à escravidão, fome, apostas online.",r:[
+["CLT x trabalho por aplicativo","Lei / fato atual","D1","O entregador é \"autônomo\" sem piso, férias ou 13º, mas a plataforma controla preço, rota e punição.","Tese: há subordinação de fato sem vínculo de direito.",""],
+["Você Não Estava Aqui (Ken Loach, 2019)","Filme","Intro","Pai vira entregador \"dono do próprio negócio\" e acaba trabalhando mais, endividado e sem poder adoecer.","Introdução sobre uberização.",""],
+["Karl Marx — alienação","Filosofia","D1/D2","O trabalhador não se reconhece no que produz e perde o controle do próprio trabalho.","Precarização e exploração.",""],
+["Admirável Gado Novo (Zé Ramalho) / Fábrica (Legião Urbana)","Música","Intro","Trabalhadores explorados e alienados.","Repertório artístico sobre trabalho.",""],
+["Art. 149 do Código Penal","Lei","D1","Define o crime de redução a condição análoga à de escravo.","Base jurídica do tema.",""],
+["\"Lista Suja\" do Ministério do Trabalho","Dado / política","Proposta","Cadastro de empregadores flagrados com trabalho escravo.","Proposta: ampliar fiscalização e divulgação.",""],
+["Que Horas Ela Volta?", "Filme", "Intro · D2", "Mostra a herança escravocrata nas relações com a empregada doméstica Val, que se surpreende quando a filha, Jéssica, decide prestar vestibular pra uma universidade pública concorrida.", "Desigualdade, trabalho doméstico e acesso ao ensino superior. Funciona por afastamento: a maioria dos filhos de domésticas não chega onde a Jéssica chegou.", "Diferentemente de Jéssica, de \"Que Horas Ela Volta?\", que disputa uma vaga numa universidade pública concorrida, muitos jovens de famílias pobres nem chegam a concluir o ensino médio.", ""],
+["Josué de Castro — Geografia da Fome","Geografia","D1","A fome é um problema social e político, não um fenômeno natural.","Insegurança alimentar.",""],
+["Mapa da Fome da ONU","Dado","D2","O Brasil voltou ao Mapa da Fome em 2022 e saiu de novo em 2025.","Política pública funciona, mas o avanço é frágil.",""],
+["Carolina Maria de Jesus — Quarto de Despejo", "Literatura", "Intro", "Diário de uma catadora de papel, mulher negra, na favela do Canindé (SP), lutando contra a fome. Ela compara a favela ao quarto de despejo, o cômodo onde se joga o que não se quer ver.", "Introdução sobre fome e desigualdade. A metáfora do quarto de despejo serve pra qualquer grupo empurrado pra fora do olhar da sociedade: população de rua, favelas, refugiados, catadores.", "Em \"Quarto de Despejo\", Carolina Maria de Jesus descreve a favela como o lugar onde a cidade esconde o que não quer ver, imagem que ainda se aplica a [grupo do tema].", ""],
+["Ilha das Flores","Curta","Intro","Acompanha o caminho de um tomate até o lixão, onde pessoas comem depois dos porcos.","Fome, desigualdade, desperdício.",""],
+["Carolina Maria de Jesus — fome e invisibilidade","Literatura","Intro · D2","No diário, ela registra a fome, a pobreza e o descaso do poder público na favela.","Além da fome, mostra a invisibilidade social de quem vive na periferia.",""],
+["Lei 14.790/2023","Lei","D1/D2","Regulamenta as apostas online (bets).","Tema zebra das bets.",""],
+["Dostoiévski — O Jogador","Literatura","Intro","O vício no jogo destrói a vida do protagonista.","Introdução sobre apostas.",""],
+["Banco Central — gasto com bets","Dado","Fim do parágrafo","Beneficiários do Bolsa Família gastando parte da renda com apostas.","Vulnerabilidade financeira digital.",""],
+["Adam Smith — A Riqueza das Nações","Economia","D1","A divisão do trabalho aumenta a produtividade. A \"mão invisível\" diz que interesses individuais podem gerar resultados coletivos.","Produtividade e mecanização. Dá pra usar por contraste: o mercado sozinho não garante condições dignas de trabalho.",""],
+["Frederick Taylor — taylorismo","Administração","D1/D2","Racionalização do trabalho: controle de tempos e movimentos pra produzir mais.","Intensificação do ritmo, perda de autonomia, trabalho repetitivo, metas abusivas (inclusive por aplicativo).",""],
+["Karl Marx — mais-valia","Filosofia","D1/D2","Parte do valor que o trabalhador produz fica com o empregador, além do que é pago em salário.","Exploração e concentração de renda.","Segundo Karl Marx, a mais-valia corresponde ao valor produzido pelo trabalhador e apropriado pelo empregador, lógica que se intensifica na precarização de [tema]."],
+["Karl Marx — exército industrial de reserva","Filosofia","D1/D2","A existência de muita gente desempregada pressiona os salários pra baixo e piora as condições de contratação.","Desemprego e precarização: quem tem emprego aceita condições ruins porque há fila de gente esperando a vaga.",""],
+["Herbert Marcuse — princípio de desempenho","Filosofia","D1/D2","A sociedade se acha livre, mas a liberdade se resume a se adaptar ao consumo e ao sistema.","Liberdade ilusória: o entregador \"dono do próprio negócio\" ou o consumidor que acha que escolhe tudo.",""],
+["CLT (1943, Era Vargas)","Lei","D1/D2 · Intro","Criou a carteira assinada, férias de 30 dias, salário mínimo, licença-maternidade e a Justiça do Trabalho.","Mostra que direitos trabalhistas foram conquistados e dependem de proteção efetiva, contrastando com a uberização.","","O limite de 8h diárias e 44h semanais vem da Constituição de 1988, não da CLT original."],
+["Ricardo Antunes — O Privilégio da Servidão","Sociologia","D1/D2","Sociólogo brasileiro que analisa a uberização: trabalho por aplicativo, sem direitos, em que ter qualquer emprego vira um \"privilégio\".","O repertório brasileiro mais forte pra uberização e precarização.","Segundo o sociólogo Ricardo Antunes, a uberização transforma o trabalho em \"privilégio da servidão\", já que o entregador aceita condições precárias por falta de alternativa."],
+["Tempos Modernos (Chaplin, 1936)","Filme","Intro","O operário repete o mesmo movimento na linha de montagem até enlouquecer e ser engolido pelas engrenagens.","Trabalho mecanizado e alienante. Combina com Taylor e Marx.",""],
+["Construção (Chico Buarque, 1971)","Música","Intro","Um operário morre ao cair do prédio e é tratado como um atrapalho ao trânsito.","Desumanização do trabalhador e acidentes de trabalho.",""],
+["Lei de Terras (1850)", "Fato histórico", "Intro", "Só quem podia comprar teria terra, o que excluiu ex-escravizados e pobres e concentrou a propriedade.", "Introdução histórica pra concentração fundiária, moradia e desigualdade. Também está no encaminhamento \"Herança histórica\".", "A Lei de Terras, de 1850, ao exigir a compra como única forma de acesso à terra, deixou pobres e ex-escravizados à margem, exclusão que ainda se reflete na falta de moradia digna.", ""],
+["José Saramago — \"capitalismo totalitário\"", "Literatura", "D1/D2", "O escritor português, único autor de língua portuguesa com Nobel de Literatura (1998), criticou o neoliberalismo como um \"capitalismo totalitário\", que submete todas as dimensões da vida à lógica do mercado.", "Desigualdade, concentração de renda, privatização de serviços essenciais, precarização. Use quando o dinheiro define quem tem acesso a direitos.", "José Saramago via no neoliberalismo um \"capitalismo totalitário\", que transforma tudo em mercadoria; no Brasil, essa lógica aparece quando o acesso a [direito do tema] depende da renda de cada um.", ""],
+["Torto Arado (Itamar Vieira Junior)", "Literatura", "Intro · D1/D2", "As irmãs Bibiana e Belonísia crescem numa fazenda do sertão baiano onde os trabalhadores recebem só o direito de morar na terra em troca do trabalho.", "Trabalho análogo à escravidão, questão agrária, herança escravocrata, quilombolas.", "Em \"Torto Arado\", Bibiana e Belonísia vivem numa fazenda onde o trabalho é pago apenas com o direito de morar. Longe de ser só ficção, essa relação ainda se repete em propriedades rurais flagradas com trabalho análogo à escravidão.", ""],
+["Sintonia (Netflix)", "Série", "Intro", "Três amigos de uma comunidade da periferia de São Paulo buscam caminhos diferentes pra sair da pobreza: o funk, a igreja e o tráfico.", "Juventude periférica, inserção do jovem no mercado de trabalho, falta de oportunidades.", ""]
+]},
+{id:"amb",t:"Meio ambiente e cidade",s:"Crise climática, enchentes, moradia, mobilidade, racismo ambiental.",r:[
+["Ailton Krenak — Ideias para Adiar o Fim do Mundo","Pensamento indígena","D1","A humanidade se separou da natureza e passou a tratá-la como recurso a ser explorado.","Crise climática como problema de mentalidade.",""],
+["COP30 em Belém (2025)","Fato histórico","Intro","O Brasil sediou a conferência do clima da ONU na Amazônia.","Introdução atual sobre clima.",""],
+["Enchentes no Rio Grande do Sul (maio de 2024)","Fato histórico","Intro · D2","Atingiram a maior parte dos municípios gaúchos e milhões de pessoas.","Racismo ambiental: o desastre é natural, mas quem sofre mais é quem foi empurrado pra área de risco.",""],
+["Milton Santos — A Urbanização Brasileira","Geografia","D1","A cidade \"corporativa\" é organizada pro mercado e empurra os pobres pras periferias.","Déficit habitacional e mobilidade.",""],
+["Estatuto da Cidade (Lei 10.257/2001)","Lei","D1 · Proposta","Define a função social da propriedade urbana.","Moradia e planejamento urbano.",""],
+["Fundação João Pinheiro","Dado","Fim do parágrafo","Déficit de cerca de 6 milhões de moradias no Brasil.","Dimensiona o problema da moradia.",""],
+["Aquarius","Filme","Intro","Uma moradora resiste à pressão de uma construtora que quer o prédio dela.","Especulação imobiliária.",""],
+["Wall-E","Filme","Intro","A Terra fica inabitável por causa do lixo e do consumo.","Consumismo e meio ambiente. Fora da ficção, não dá pra abandonar o planeta nem deixar a recuperação dele pra uma máquina.","Em \"Wall-E\", a humanidade abandona a Terra poluída enquanto um robô recolhe o lixo. Fora da ficção, porém, não existe planeta reserva, e o descarte irregular de resíduos no Brasil exige responsabilidade coletiva."],
+["Milton Santos — Por uma Outra Globalização","Geografia","D1/D2","A globalização tem três faces: fábula (promessa de benefícios pra todos), perversidade (lucro concentrado e exploração social e ambiental) e possibilidade (construir outra dinâmica). Frase: \"A natureza tornou-se, também ela, mercadoria\".","Mostra que as regiões pobres ficam com os custos da exploração ambiental, enquanto os lucros vão pra poucos.","Para Milton Santos, \"a natureza tornou-se, também ela, mercadoria\"; nesse sentido, a exploração de [recurso do tema] beneficia poucos e deixa os danos para as populações mais pobres."],
+["CF/88, art. 225","Lei","D1/D2 · Proposta","Todos têm direito ao meio ambiente ecologicamente equilibrado, essencial à sadia qualidade de vida, e o dever de preservá-lo é do poder público e da coletividade.","Base jurídica de qualquer tema ambiental. Contrasta com desmatamento, lixo, poluição.",""],
+["Hans Jonas — princípio responsabilidade","Filosofia","D1/D2","Agir com responsabilidade exige pensar nos efeitos das nossas ações sobre o futuro da humanidade e do planeta.","Proteção das próximas gerações. Ótimo pra crise climática e consumo.","Segundo Hans Jonas, devemos agir considerando os efeitos de nossas ações sobre as futuras gerações, princípio ignorado quando [prática do tema] compromete o meio ambiente."],
+["Bauman — consumo e descarte","Sociologia","D1","O consumo desenfreado estimula trocar e descartar tudo rápido, aumentando a pressão sobre o meio ambiente.","Resíduos, lixo eletrônico, obsolescência programada, fast fashion.",""],
+["Racismo ambiental", "Conceito", "D1/D2", "Conceito formulado pelo ativista estadunidense Benjamin Chavis nos anos 1980: os danos ambientais recaem de forma desproporcional sobre as comunidades negras, indígenas e pobres.", "Território e justiça ambiental. Combina com o exemplo das enchentes no RS.", "À luz do conceito de racismo ambiental, criado por Benjamin Chavis, percebe-se que enchentes, lixões e poluição atingem com mais força bairros negros e pobres.", ""],
+["Mariana (2015) e Brumadinho (2019)","Fato histórico","Intro · D1","Rompimentos de barragens de mineração (Samarco e Vale) que mataram centenas de pessoas e destruíram rios inteiros.","Negligência empresarial e estatal, fiscalização falha, lucro acima da vida.","Os rompimentos das barragens de Mariana e Brumadinho evidenciam como a negligência na fiscalização ambiental, aliada à busca pelo lucro, coloca vidas e ecossistemas em risco."],
+["Política Nacional de Resíduos Sólidos (Lei 12.305/2010)","Lei","D1/D2 · Proposta","Prevê fim dos lixões, coleta seletiva e responsabilidade das empresas sobre o descarte dos produtos (logística reversa).","Lixo, reciclagem, consumismo. Lixões ainda existem, o que mostra a falha.",""],
+["Ulrich Beck — Sociedade de Risco","Sociologia","D1/D2","O próprio progresso industrial produz riscos globais (poluição, crise climática) que ameaçam todos.","Crise climática, desastres ambientais.",""],
+["Garrett Hardin — tragédia dos comuns","Ecologia / economia","D1/D2","Quando um recurso é de todos, cada um usa o máximo pro próprio benefício, e o recurso acaba esgotado.","Água, desmatamento, pesca predatória, poluição.",""],
+["Davi Kopenawa — A Queda do Céu","Pensamento indígena","D1/D2","O xamã yanomami alerta que a destruição da floresta pelos brancos vai fazer o céu cair sobre todos.","Garimpo ilegal, crise yanomami, desmatamento. Dá voz indígena ao argumento.",""],
+["Henri Lefebvre — O Direito à Cidade","Filosofia / sociologia","D1/D2","Todos devem ter direito de usar, viver e decidir sobre a cidade, não só quem pode pagar.","Moradia, mobilidade, arquitetura hostil, segregação urbana.",""],
+["Gentrificação","Conceito","D1/D2","Quando um bairro popular se valoriza e os moradores pobres são expulsos pelo aumento dos preços.","Moradia, especulação imobiliária. Combina com Aquarius.",""],
+["Chico Mendes", "Fato / personalidade", "Intro · D1/D2", "Seringueiro, sindicalista e ambientalista acriano, liderou os \"empates\", em que seringueiros se colocavam na frente das motosserras pra impedir o desmatamento. Foi assassinado em 1988 a mando de um fazendeiro. Disse que começou lutando pelas seringueiras, depois pela Amazônia, e percebeu que estava \"lutando pela humanidade\".", "A referência brasileira mais forte quando o tema une preservação ambiental e justiça social: desmatamento, queimadas, conflitos no campo, garimpo, povos tradicionais.", "A trajetória de Chico Mendes, morto por defender a floresta, mostra que proteger a Amazônia é também proteger as pessoas que vivem dela, ideia ainda ignorada diante de [problema do tema].", ""],
+["Crise Yanomami (2023)", "Fato histórico", "Intro · D1/D2", "Em janeiro de 2023, o Ministério da Saúde declarou emergência em saúde pública no território Yanomami, devastado pela desnutrição e por doenças ligadas ao garimpo ilegal.", "Garimpo ilegal, saúde indígena, fiscalização ambiental. Também serve no afastamento: a comoção nem sempre vira fiscalização permanente.", "A emergência sanitária decretada no território Yanomami em 2023 revelou o custo humano do garimpo ilegal e da fiscalização falha em terras indígenas.", ""]
+]},
+{id:"cult",t:"Cultura, ciência, memória e temas zebra",s:"Culturas indígenas, formação do Brasil, patrimônio, ciência, cigarro eletrônico.",r:[
+["Darcy Ribeiro — O Povo Brasileiro","Antropologia","Intro · D1","O Brasil se formou do encontro, muitas vezes violento, entre indígenas, africanos e europeus.","Identidade nacional e apagamento indígena.",""],
+["CF/88, art. 231","Lei","D1","Reconhece a organização social, costumes, línguas e terras dos povos indígenas.","Base jurídica pra cultura indígena.",""],
+["Década Internacional das Línguas Indígenas (ONU, 2022–2032)","Documento internacional","Intro · Proposta","Esforço global pra preservar línguas indígenas ameaçadas.","Introdução ou reforço da proposta.",""],
+["Freyre x Florestan em diálogo","Sociologia","D1/D2","Freyre falou em democracia racial; Florestan mostrou que ela é um mito.","Colocar os dois em contraste mostra senso crítico, que a banca valoriza.",""],
+["Anvisa — RDC 855/2024","Norma","D1","Mantém proibidos a venda e o uso comercial do cigarro eletrônico no Brasil.","Vape entre adolescentes: proibido, mas fácil de comprar.",""],
+["Convenção-Quadro da OMS para Controle do Tabaco","Documento internacional","Proposta","Tratado global contra o tabagismo.","Compromisso internacional na proposta.",""],
+["Incêndio do Museu Nacional (2018)","Fato histórico","Intro","O museu mais antigo do país pegou fogo e perdeu cerca de 20 milhões de itens, depois de anos de falta de verba.","Patrimônio cultural, ciência, memória e descaso do Estado.","Em 2018, o incêndio do Museu Nacional destruiu grande parte de um acervo de 200 anos, resultado de anos de subfinanciamento. Esse episódio revela o descaso com a preservação da memória no Brasil."],
+["Semana de Arte Moderna (1922) e Manifesto Antropófago","Fato histórico","Intro","Os modernistas propuseram uma arte brasileira própria; Oswald de Andrade sugeriu \"devorar\" a cultura estrangeira e transformá-la em algo nosso.","Valorização da cultura nacional, influência estrangeira, identidade.",""],
+["Carl Sagan — O Mundo Assombrado pelos Demônios","Ciência","D1/D2","Defende o pensamento científico e alerta que uma sociedade que depende da ciência, mas não a entende, fica vulnerável a charlatões.","Negacionismo, pseudociência, fake news sobre saúde, investimento em ciência.",""],
+["Os Sertões (Euclides da Cunha)","Literatura","Intro","Relata a Guerra de Canudos, em que o Estado massacrou uma comunidade pobre do sertão baiano.","Violência do Estado contra os pobres, desigualdade regional.",""],
+["Ferreira Gullar — \"a arte existe porque a vida não basta\"", "Literatura", "Intro · D1/D2", "O poeta maranhense, autor do \"Poema Sujo\", defendia que a arte é necessidade humana, não luxo: ela amplia a experiência e dá sentido ao que se vive.", "Acesso à cultura, ensino de artes, financiamento público da cultura, arte periférica, leitura, patrimônio.", "Para Ferreira Gullar, \"a arte existe porque a vida não basta\"; negar acesso à cultura às periferias, portanto, é limitar a própria forma como essas pessoas imaginam o futuro.", ""]
+]}
+];
+const ENC=[
+{t:"Falha estatal",w:"Quando o problema existe porque o governo não cria, não fiscaliza ou não aplica políticas públicas.",tf:"Em primeiro lugar, a negligência do Estado em garantir [direito do tema] contribui para a persistência desse cenário.",r:[
+["Gilberto Dimenstein — O Cidadão de Papel","Jornalismo","D1/D2","Os direitos estão garantidos na lei, mas não chegam à vida real de quem mais precisa. O cidadão só existe \"no papel\".","Entra logo depois da mini justificativa, pra mostrar o abismo entre a lei e a prática. Combina com citar o artigo da CF que garante o direito do tema.","Essa situação ilustra o que o jornalista Gilberto Dimenstein chama de \"cidadão de papel\": aquele que tem direitos garantidos por lei, mas não os exerce na prática."],
+["John Locke — contrato social","Filosofia","D1/D2","O Estado existe pra proteger os direitos naturais das pessoas (vida, liberdade e propriedade). Se não cumpre esse papel, perde a legitimidade.","Use pra mostrar que a omissão do governo não é só um descuido, é uma quebra da função básica dele.","Segundo o filósofo John Locke, o Estado tem o dever de proteger os direitos dos cidadãos, função que é negligenciada quando o poder público não oferece [serviço do tema] à população."]
+]},
+{t:"Falta de empatia",w:"Quando o problema persiste porque as pessoas são indiferentes ao sofrimento do outro ou normalizam a situação.",tf:"Além disso, a indiferença social diante de [grupo afetado] agrava o problema.",r:[
+["Hannah Arendt — banalidade do mal","Filosofia","D1/D2","O mal nem sempre vem de monstros: pode ser praticado ou tolerado por pessoas comuns que deixam de refletir sobre os próprios atos.","Ótimo quando a sociedade vê o problema todo dia e não reage (violência, abandono de idosos, preconceito). Liga a omissão coletiva à continuidade do problema.","Nesse sentido, a filósofa Hannah Arendt, ao formular o conceito de \"banalidade do mal\", explica que a ausência de reflexão leva indivíduos comuns a naturalizarem injustiças, como ocorre com [problema do tema]."],
+["Zygmunt Bauman e Leonidas Donskis — Cegueira Moral","Sociologia","D1/D2","Na modernidade líquida, as pessoas perdem a sensibilidade diante do sofrimento alheio. O outro vira alguém que não nos diz respeito.","Use quando a causa é o individualismo: cada um olha só pra si e ignora quem sofre. Bom pra temas de grupos invisibilizados.","Esse comportamento reflete a \"cegueira moral\" descrita por Bauman e Donskis, segundo a qual o indivíduo contemporâneo se torna insensível à dor do outro."]
+]},
+{t:"Falta de informação",w:"Quando a população não conhece os riscos, os próprios direitos ou as formas de lidar com o problema.",tf:"Em segundo plano, a desinformação da população acerca de [tema] contribui para a manutenção desse quadro.",r:[
+["Platão — Alegoria da Caverna","Filosofia","Intro · D1/D2","Prisioneiros acorrentados numa caverna acham que as sombras na parede são a realidade, porque nunca viram outra coisa.","Compara quem está desinformado com os prisioneiros: sem acesso ao conhecimento, a pessoa toma o que vê como verdade. Funciona até na introdução.","Assim como os prisioneiros da \"Alegoria da Caverna\", de Platão, que tomavam sombras por realidade, muitos brasileiros desconhecem [risco ou direito do tema] por falta de acesso à informação."],
+["Immanuel Kant — Esclarecimento (Sapere aude)","Filosofia","D1/D2","O esclarecimento é a saída do ser humano da \"menoridade\", que é a incapacidade de pensar por conta própria. O lema é \"ouse saber\".","Mostra que sem informação a pessoa fica dependente e não consegue tomar decisões conscientes. Combina com proposta de campanhas informativas.","De acordo com Immanuel Kant, o esclarecimento é a saída do homem de sua menoridade; entretanto, sem informação sobre [tema], grande parte da população permanece nessa condição."]
+]},
+{t:"Lacuna educacional",w:"Quando a escola não aborda o tema, não forma senso crítico ou é desigual no acesso.",tf:"Ademais, a ineficiência do sistema educacional em abordar [tema] favorece a perpetuação do problema.",r:[
+["Paulo Freire — educação bancária","Educação","D1/D2","Freire critica a escola que só \"deposita\" conteúdo no aluno, sem diálogo e sem formar consciência crítica.","Use quando a escola até ensina conteúdo, mas não prepara o aluno pra refletir sobre o problema do tema. Abre caminho pra uma proposta via MEC.","Esse cenário evidencia a \"educação bancária\" criticada por Paulo Freire, modelo em que o estudante apenas recebe conteúdos, sem desenvolver a criticidade necessária para compreender [tema]."],
+["Immanuel Kant — Sobre a Pedagogia","Filosofia","D1/D2","\"O ser humano é aquilo que a educação faz dele.\" A formação define quem a pessoa se torna.","Bom pra mostrar que uma falha na educação gera adultos que reproduzem o problema. Liga direto com a consequência da consequência.","Para Kant, o homem é aquilo que a educação faz dele; logo, quando a escola não discute [tema], forma cidadãos despreparados para combatê-lo."]
+]},
+{t:"Negligência familiar",w:"Quando a família não acompanha, não orienta ou não dá suporte (muito usado em temas de infância e adolescência).",tf:"Paralelamente, a omissão de muitas famílias no acompanhamento de crianças e jovens intensifica [problema].",r:[
+["Berger e Luckmann — socialização primária","Sociologia","D1/D2","Em A Construção Social da Realidade, explicam que a família é o primeiro lugar onde a criança aprende valores e comportamentos, e isso marca a vida toda.","Mostra que, se a família falha nessa etapa, a criança cresce sem referências. Use em telas na infância, violência, saúde mental de jovens.","Segundo os sociólogos Peter Berger e Thomas Luckmann, a família é responsável pela socialização primária do indivíduo; assim, quando ela se omite, a criança fica vulnerável a [problema do tema]."],
+["CF/88, art. 227 e ECA (Lei 8.069/1990)","Lei","D1/D2 · Proposta","É dever da família, da sociedade e do Estado garantir à criança e ao adolescente, com absoluta prioridade, saúde, educação, dignidade e convivência familiar.","Prova que a responsabilidade da família está na lei. Cuidado pra não culpar só os pais: fala da rotina corrida e falta de orientação também.","Embora o artigo 227 da Constituição Federal atribua à família o dever de garantir, com absoluta prioridade, os direitos da criança, muitos responsáveis não acompanham [situação do tema]."]
+]},
+{t:"Manipulação midiática",w:"Quando a mídia, os algoritmos ou as empresas moldam a opinião de propósito, com interesses próprios.",tf:"Outrossim, a manipulação exercida pelos meios de comunicação sobre a opinião pública agrava [problema].",r:[
+["Noam Chomsky e Edward Herman — A Manipulação do Público","Linguística / política","D1/D2","A grande mídia \"fabrica consenso\": filtra o que vira notícia de acordo com os interesses de donos e anunciantes.","Use quando a causa é a mídia direcionando a percepção das pessoas, escondendo ou distorcendo o problema.","Conforme Noam Chomsky e Edward Herman, os meios de comunicação fabricam consenso ao selecionar o que será noticiado, o que explica a forma distorcida como [tema] é retratado."],
+["Shoshana Zuboff — Capitalismo de Vigilância","Sociologia","D1/D2","As plataformas coletam dados pra prever e influenciar o comportamento do usuário. O produto vendido é a atenção dele.","Versão digital da manipulação: algoritmos que decidem o que você vê. Ótimo pra fake news, consumo, apostas, redes.","Nesse sentido, a socióloga Shoshana Zuboff denuncia o \"capitalismo de vigilância\", no qual as plataformas usam dados pessoais para direcionar comportamentos, como ocorre com [tema]."]
+]},
+{t:"Influência midiática",w:"Quando a mídia e as redes criam padrões e comportamentos que as pessoas copiam, mesmo sem intenção clara de manipular.",tf:"Somado a isso, a influência das mídias na construção de comportamentos contribui para [problema].",r:[
+["Marshall McLuhan — \"o meio é a mensagem\"","Comunicação","Intro · D1/D2","O próprio meio de comunicação (TV, celular, redes) muda a forma como as pessoas pensam e se relacionam, além do conteúdo que ele transmite.","Use pra mostrar que o simples uso constante das redes já altera hábitos (atenção, autoimagem, consumo).","Como afirmou Marshall McLuhan, \"o meio é a mensagem\": a lógica acelerada das redes sociais molda o comportamento dos usuários, especialmente em relação a [tema]."],
+["Guy Debord — A Sociedade do Espetáculo","Filosofia","D1/D2","As relações passam a ser mediadas por imagens. As pessoas vivem pra aparecer e copiam a vida que veem na tela.","Ótimo pra padrões estéticos, consumismo e influenciadores: a imagem vira o modelo a ser seguido.","Essa dinâmica remete à \"sociedade do espetáculo\", de Guy Debord, em que a vida passa a ser mediada por imagens, levando o público a reproduzir os padrões exibidos nas redes."]
+]},
+{t:"Preconceito",w:"Quando a causa é a discriminação de um grupo (racismo, machismo, capacitismo, gordofobia, etarismo).",tf:"Ademais, o preconceito enraizado na sociedade brasileira contra [grupo] é um entrave à resolução do problema.",r:[
+["Norberto Bobbio — A Natureza do Preconceito","Filosofia política","D1/D2","Em Elogio da Serenidade, Bobbio define o preconceito como uma opinião errada aceita como verdade sem questionamento, e que resiste até a provas contrárias.","Explica por que o preconceito é tão difícil de combater: ele não depende de fatos. Serve pra qualquer grupo discriminado.","De acordo com Norberto Bobbio, o preconceito é uma opinião equivocada aceita acriticamente como verdade, o que explica a persistência da discriminação contra [grupo]."],
+["Erving Goffman — Estigma","Sociologia","D1/D2","O estigma é uma marca social que faz a sociedade enxergar a pessoa só por uma característica, reduzindo ela a isso e excluindo.","Bom pra deficiência, obesidade, saúde mental, ex-presidiários. Liga o rótulo à exclusão (consequência).","Segundo o sociólogo Erving Goffman, o estigma reduz o indivíduo a um atributo depreciado, processo que afeta diretamente [grupo] e dificulta sua inclusão."]
+]},
+{t:"Desigualdade",w:"Quando o problema atinge mais os pobres, os periféricos ou uma região, por diferença de renda e acesso.",tf:"Em primeiro lugar, a desigualdade socioeconômica do país faz com que [problema] atinja de forma mais intensa a população vulnerável.",r:[
+["Jean-Jacques Rousseau — Discurso sobre a Origem da Desigualdade","Filosofia","D1/D2","A desigualdade entre os homens não é natural: ela surge da sociedade, principalmente com a propriedade privada.","Use pra mostrar que a desigualdade do tema é construída socialmente, então pode e deve ser corrigida por políticas públicas.","Para Rousseau, a desigualdade não é natural, mas socialmente construída; nesse sentido, a diferença de acesso a [direito do tema] entre ricos e pobres é fruto de escolhas históricas."],
+["Pierre Bourdieu — capital cultural","Sociologia","D1/D2","Além do dinheiro, as famílias passam pros filhos um \"capital cultural\" (livros, linguagem, referências). A escola valoriza isso e acaba reproduzindo a desigualdade.","Ótimo pra temas de educação, leitura, acesso à cultura e vestibular.","Segundo Pierre Bourdieu, o capital cultural herdado da família influencia o desempenho escolar, o que faz com que jovens de baixa renda tenham menos acesso a [tema]."]
+]},
+{t:"Lógica capitalista",w:"Quando o problema é movido pelo lucro: consumo, exploração do trabalho, mercantilização de algo que deveria ser direito.",tf:"Além disso, a lógica de mercado, que prioriza o lucro em detrimento do bem-estar, intensifica [problema].",r:[
+["Karl Marx — fetichismo da mercadoria","Filosofia","D1/D2","No capitalismo, a mercadoria parece ter valor \"mágico\" por si só, e as pessoas esquecem o trabalho humano e as relações sociais por trás dela.","Use em consumismo, trabalho precário e moda rápida: mostra que o produto esconde quem foi explorado pra fazê-lo.","Esse comportamento remete ao \"fetichismo da mercadoria\", de Karl Marx, segundo o qual o produto ganha valor simbólico e oculta as relações de exploração envolvidas em sua produção."],
+["Zygmunt Bauman — Vida para Consumo","Sociologia","D1/D2","Na sociedade de consumidores, as próprias pessoas viram mercadoria e precisam se \"vender\" o tempo todo. O consumo define quem a pessoa é.","Ótimo pra redes, influenciadores, padrão estético e endividamento.","Conforme Zygmunt Bauman, em \"Vida para Consumo\", os indivíduos passam a ser avaliados pelo que consomem, lógica que alimenta [problema do tema]."]
+]}
+,{t:"Herança histórica e cultural",w:"Quando o problema tem raízes no passado do país: escravidão, colonização, concentração de terra, patriarcado.",tf:"Além disso, é imprescindível reconhecer que a herança histórica [escravocrata/colonial/patriarcal] ainda perpetua [problema do tema].",r:[
+["Lei de Terras (1850)", "Fato histórico", "Intro · D1/D2", "Determinou que a terra só podia ser obtida por compra, o que impediu os pobres e, depois, os escravizados libertos de ter acesso a ela.", "Comprova que a exclusão de hoje tem raiz histórica. Moradia, questão agrária, desigualdade racial.", "A Lei de Terras, de 1850, ao exigir a compra como única forma de acesso à terra, deixou pobres e ex-escravizados à margem, exclusão que ainda se reflete na falta de moradia digna.", ""],
+["Lilia Schwarcz — Sobre o Autoritarismo Brasileiro", "História / antropologia", "D1/D2", "O autoritarismo, o racismo e a desigualdade de hoje têm raízes no passado escravocrata e colonial do país.", "Use pra mostrar que o problema não é recente nem acidental: é herança que se reproduz.", "Segundo a historiadora Lilia Schwarcz, o racismo e a desigualdade atuais são heranças do passado escravocrata; tal lógica é perceptível na realidade brasileira, em que [problema do tema]."]
+]}
+];
+const KIT=new Set();
+const TYPES=[["Todos",null],["Pensadores",/filosofia|sociolog|antropolog|psicolog|psiquiatr|geografia|histór|educação|economia|jornal|ensaio|crítica|direito|pensamento|comunicação|linguística|ciência|ativismo|administração|futurismo|ecologia/i],["Leis e documentos",/^lei|leis|norma|documento|política pública|\/ política/i],["Filmes, livros e arte",/filme|série|literatura|documentário|curta|música|mitolog|livro|teatro/i],["Fatos, dados e conceitos",/dado|fato|conceito|frase|personalidade/i]];
+const POS=[["Qualquer parte",null],["Introdução",/intro/i],["D1/D2",/D1|D2|tese|fim do par/i],["Proposta",/proposta/i],["Conclusão",/conclusão|fechamento/i]];
+const S={tf:null,pf:null,hide:false,rev:false};
+let dom=new Set();try{dom=new Set(JSON.parse(localStorage.getItem("rep-dom")||"[]"))}catch(e){}
+const save=()=>{try{localStorage.setItem("rep-dom",JSON.stringify([...dom]))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ALL=new Set();AX.forEach(a=>a.r.forEach(r=>ALL.add(r[0])));ENC.forEach(e=>e.r.forEach(r=>ALL.add(r[0])));
+function card(r,meta){meta=meta&&meta.o?meta:null;const[n,t,p,i,u,e,c]=r,k=KIT.has(n),d=dom.has(n),key=encodeURIComponent(n);
+return `<article class="card${k?" kit":""}${d?" done":""}" data-k="${key}"${S.rev?' tabindex="0" role="button" aria-expanded="false"':""}><div class="chead"><h4>${esc(n)}</h4><button type="button" class="dom" data-k="${key}" aria-pressed="${d}">${d?"✓ Entendi":"☐ Entendi"}</button></div><div class="tags"><span class="tag">${esc(t)}</span><span class="tag pos">${esc(p)}</span>${meta&&meta.fit?`<span class="tag fit">Encaixa muito</span>`:""}${meta?meta.o.map(o=>`<span class="tag org">${esc(o)}</span>`).join(""):""}</div>${meta&&meta.why?`<p class="why">✦ ${esc(meta.why)}</p>`:""}<div class="cbody"><p><span class="lbl">A ideia</span>${esc(i)}</p><p class="use"><span class="lbl">Como usar</span>${esc(u)}</p>${e?`<p class="eg">${esc(e)}</p>`:""}${c?`<p class="warn"><b>Cuidado · </b>${esc(c)}</p>`:""}</div>${meta&&meta.q?`<button type="button" class="howbtn" data-k="${key}" data-q="${esc(meta.q)}" data-l="${meta.lvl||"médio"}">Como usar em "${esc(meta.q)}"</button><div class="how" hidden></div>`:""}<p class="peek">Tenta explicar e amarrar de cabeça. Depois toca no card pra conferir.</p></article>`}
+function ok(r,ctx,q){if(S.tf&&!S.tf.test(r[1]))return false;if(S.pf&&!S.pf.test(r[2]))return false;if(S.hide&&dom.has(r[0]))return false;if(q&&!(r.join(" ")+" "+ctx).toLowerCase().includes(q))return false;return true}
+function prog(){const ad=[...ALL].filter(n=>dom.has(n)).length;document.getElementById("mall").style.width=(ad/ALL.size*100)+"%";document.getElementById("pall").textContent=`Você já marcou ${ad} de ${ALL.size} repertórios como entendidos`}
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const STOP=new Set("a o as os e de da do das dos no na nos nas em um uma uns umas para pra por pela pelo pelas pelos com sem sobre que se ao aos brasil brasileira brasileiro brasileiras brasileiros sociedade desafios desafio impactos impacto combate questao pauta discussao caminhos importancia efeitos uso problema problemas acerca frente perspectiva perspectivas garantia contemporanea atual".split(" "));
+const GROUPS=[
+["ia","inteligencia artificial","algoritmo","algoritmos","automacao","robo","robos","maquinas","chatgpt","singularidade","tecnologia","tecnologica","digital"],
+["redes sociais","redes","internet","online","plataformas","influenciador","influenciadores","curtidas","virtual","digital","algoritmo"],
+["telas","tela","celular","smartphone","tablet","videogame"],
+["fake news","desinformacao","noticias falsas","pos-verdade","mentira","negacionismo","boatos","bolhas"],
+["saude mental","ansiedade","depressao","burnout","transtorno","transtornos","psicologico","psiquica","psiquiatrica","caps","manicomio","hospicio","cansaco","loucura"],
+["saude","sus","doenca","doencas","vacina","prevencao","medico","sanitaria","pandemia","obesidade","hospital"],
+["vacina","vacinacao","imunizacao","imunizantes","antivacina","sarampo","varíola"],
+["corpo","beleza","estetica","estetico","gordofobia","autoimagem","filtros","procedimentos esteticos","aparencia","juventude eterna"],
+["idoso","idosos","velhice","etarismo","envelhecimento","pessoa idosa"],
+["mulher","mulheres","genero","machismo","feminicidio","violencia domestica","misoginia","misoginos","igualdade salarial","maria da penha","meninas"],
+["racismo","negro","negra","negros","negras","racial","raca","escravidao","escravocrata","cotas","abolicao","quilombolas"],
+["indigena","indigenas","povos originarios","yanomami","garimpo","krenak","kopenawa","linguas indigenas"],
+["meio ambiente","ambiental","natureza","clima","climatica","desmatamento","amazonia","floresta","poluicao","sustentavel","queimadas","ecologico"],
+["lixo","residuos","reciclagem","descarte","obsolescencia","aterro","lixoes"],
+["agua","saneamento","rios","enchentes","seca","barragens"],
+["educacao","escola","escolas","escolar","ensino","professor","professores","aluno","alunos","estudante","evasao","analfabetismo","universidade","vestibular","pedagogia"],
+["leitura","livro","livros","ler","literatura","analfabetismo funcional","bibliotecas"],
+["trabalho","trabalhador","trabalhadores","emprego","desemprego","uberizacao","aplicativo","precarizacao","clt","salario","exploracao","escravo","entregador"],
+["fome","alimentacao","alimentar","inseguranca alimentar","miseria"],
+["desigualdade","pobreza","pobres","renda","periferia","periferias","favela","exclusao","miseria","classes"],
+["moradia","habitacao","cidade","cidades","urbana","urbano","situacao de rua","favela","gentrificacao","arquitetura hostil","aporofobia","direito a cidade","especulacao imobiliaria"],
+["deficiencia","pcd","acessibilidade","capacitismo","inclusao","autismo","neurodivergentes","cegueira","braille","libras","surdos"],
+["cultura","arte","artes","patrimonio","museu","cinema","musica","identidade","cultural"],
+["ciencia","cientifico","cientifica","pesquisa","pseudociencia","negacionismo"],
+["democracia","politica","eleicao","eleicoes","voto","participacao","corrupcao","poderes","ditadura","memoria","autoritarismo"],
+["consumo","consumismo","consumidor","consumidores","mercadoria","publicidade","propaganda","marcas","ostentacao","endividamento","lucro"],
+["apostas","bets","jogo","jogos","jogador","vicio","cassino"],
+["crianca","criancas","infancia","infantil","adolescente","adolescentes","adolescencia","jovem","jovens","juventude","eca","menores"],
+["familia","familiar","familias","pais","responsaveis","socializacao"],
+["drogas","dependencia quimica","alcool","cigarro","cigarro eletronico","vape","tabaco","vicio"],
+["violencia","seguranca","policia","policial","crime","faccoes","milicias","armas","homicidios","prisao","prisoes","carcerario","presos","encarceramento"],
+["preconceito","discriminacao","estigma","intolerancia","odio","xenofobia","homofobia","bullying","exclusao","diferenca"],
+["privacidade","dados","vigilancia","lgpd","exposicao","panoptico","vazamento"],
+["estado","governo","poder publico","politicas publicas","politica publica","omissao","negligencia","direitos","cidadania"],
+["mobilidade","transporte","transito"],
+["imigrantes","refugiados","xenofobia","migracao","migrante","nordestinos","exodo","retirantes"],
+["ribeirinhos","ribeirinho","povos tradicionais","comunidades tradicionais","quilombolas","seringueiros","amazonia","rios","indigenas","floresta"],
+["lgbt","lgbtqia","homofobia","transfobia","diversidade","preconceito","discriminacao"],
+["solidao","isolamento","vinculos","relacoes","empatia","indiferenca"]
+];
+const IDX=[];
+ENC.forEach(e=>e.r.forEach(r=>IDX.push({r,ctx:"Encaminhamento: "+e.t,cn:norm(e.t+" "+e.w)})));
+AX.forEach(a=>a.r.forEach(r=>IDX.push({r,ctx:a.t.split(",")[0],cn:norm(a.t+" "+a.s)})));
+IDX.forEach(x=>{const r=x.r;x.f=[[norm(r[0]),6],[norm(r[4]),4],[norm(r[3]),3],[norm((r[5]||"")+" "+(r[6]||"")),1.5],[norm(r[1]+" "+r[2]),1],[x.cn,2]]});
+const rq=t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+const stem=t=>{let b=t;if(b.length>=5&&b.endsWith("s"))b=b.slice(0,-1);if(b.length>=7)b=b.slice(0,-2);return b};
+const B="(^|[^a-z0-9])";
+function rxTok(t){const b=stem(t);return b.length<4?new RegExp(B+rq(t)+"(?![a-z0-9])"):new RegExp(B+rq(b)+"[a-z]*")}
+function rxTerm(t){return t.includes(" ")?new RegExp(B+t.split(/\s+/).map(rq).join("\\s+")):new RegExp(B+rq(t)+"(s|es)?(?![a-z0-9])")}
+function search(raw){const qn=norm(raw);let toks=[...new Set(qn.split(/[^a-z0-9]+/).filter(t=>t&&!STOP.has(t)))];const fixes=[];if(typeof fixTok==="function")toks=toks.map(t=>{const f=fixTok(t);if(f){fixes.push([t,f]);return f}return t});
+const exp=new Set();
+GROUPS.forEach(g=>{const hit=g.some(term=>{const tn=norm(term);if(tn.includes(" "))return qn.includes(tn);return toks.some(t=>t===tn||(t.length>=4&&tn.length>=4&&(tn.startsWith(stem(t))||t.startsWith(tn))))});if(hit)g.forEach(term=>exp.add(norm(term)))});
+toks.forEach(t=>exp.delete(t));
+const dR=toks.map(rxTok),eR=[...exp].map(rxTerm);
+const best=new Map();
+IDX.forEach(x=>{if(!ok(x.r,"",""))return;let sc=0;const hitTok=new Set();
+x.f.forEach(([txt,w])=>{dR.forEach((re,i)=>{if(re.test(txt)){sc+=w;hitTok.add(i)}});let e=0;eR.forEach(re=>{if(re.test(txt))e+=w*.5});sc+=Math.min(e,w*1.5)});
+if(toks.length>1&&hitTok.size===toks.length)sc+=4;
+if(sc<1)return;const k=x.r[0],cur=best.get(k);
+if(cur){cur.ctx.add(x.ctx);if(sc>cur.sc){cur.sc=sc;cur.r=x.r}}else best.set(k,{r:x.r,sc,ctx:new Set([x.ctx])})});
+const list=[...best.values()].sort((a,b)=>b.sc-a.sc);return {list,toks,exp:[...exp],fixes}}
+const VOCAB=new Set();IDX.forEach(x=>x.f.forEach(([t])=>t.split(/[^a-z0-9]+/).forEach(w=>{if(w.length>=4)VOCAB.add(w)})));
+GROUPS.forEach(g=>g.forEach(t=>norm(t).split(/\s+/).forEach(w=>{if(w.length>=4)VOCAB.add(w)})));
+function lev(a,b){if(Math.abs(a.length-b.length)>2)return 9;const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+function fixTok(t){if(t.length<5)return null;const st=stem(t);for(const w of VOCAB){if(w.startsWith(st))return null}
+let best=null,bd=9;const lim=t.length>=8?2:1;for(const w of VOCAB){if(Math.abs(w.length-t.length)>lim)continue;const d=lev(t,w);if(d<bd){bd=d;best=w}}return bd<=lim?best:null}
+const LABEL={"ia":"o avanço da inteligência artificial","redes sociais":"o uso das redes sociais","telas":"o uso excessivo de telas","fake news":"a disseminação de notícias falsas","saude mental":"a saúde mental da população","saude":"o acesso à saúde","vacina":"a queda da vacinação","corpo":"a pressão estética","idoso":"a valorização da pessoa idosa","mulher":"a violência contra a mulher","racismo":"o racismo","indigena":"a proteção dos povos indígenas","meio ambiente":"a preservação ambiental","lixo":"o descarte de lixo","agua":"o acesso à água e ao saneamento","educacao":"a educação","leitura":"o hábito da leitura","trabalho":"as condições de trabalho","fome":"a fome","desigualdade":"a desigualdade social","moradia":"o direito à moradia","deficiencia":"a inclusão de pessoas com deficiência","cultura":"o acesso à cultura","ciencia":"a valorização da ciência","democracia":"a participação democrática","consumo":"o consumismo","apostas":"as apostas online","crianca":"a proteção de crianças e jovens","familia":"o papel da família","drogas":"o uso de drogas","violencia":"a violência","preconceito":"o preconceito","privacidade":"a proteção de dados","estado":"a atuação do Estado","mobilidade":"a mobilidade urbana","imigrantes":"a xenofobia","ribeirinhos":"a realidade dos povos ribeirinhos","lgbt":"o preconceito contra pessoas LGBTQIA+","solidao":"a solidão"};
+function themePhrase(raw){let t=raw.trim().replace(/\s+/g," ");t=t.split(" ").map(w=>{const f=fixTok(norm(w));return f||w}).join(" ");const words=norm(t).split(/[^a-z0-9]+/).filter(w=>w&&!STOP.has(w));
+if(t.split(" ").length<=3){const qn=norm(t);for(const g of GROUPS){const k=norm(g[0]);if(LABEL[k]&&g.some(term=>{const tn=norm(term);return tn===qn||words.includes(tn)}))return LABEL[k]}for(const g of GROUPS){const k=norm(g[0]);if(!LABEL[k])continue;if(g.some(term=>{const tn=norm(term);return !tn.includes(" ")&&words.some(w=>w.length>=4&&tn.length>=4&&tn.startsWith(stem(w)))}))return LABEL[k]}return t.toLowerCase()}
+t=t.replace(/^(os\s+)?(desafios|impactos|caminhos|efeitos|consequ[eê]ncias)\s+(para|do|da|de|dos|das|no|na)\s+/i,"").replace(/\s+(no|na)\s+(brasil|sociedade brasileira)(\s+contempor[aâ]nea)?$/i,"").replace(/\s+em\s+(quest[aã]o|pauta|discuss[aã]o)$/i,"").replace(/\s+(no|na)\s+(brasil|sociedade brasileira)$/i,"");
+return t.charAt(0).toLowerCase()+t.slice(1)}
+const ENCMAP=[["falha estatal",/\blei\b|estado|governo|constitui|direito|politica publica|omiss|cidadan|\bsus\b|poder publico/g],["lacuna educacional",/educa|escola|ensino|professor|leitura|pedagog/g],["falta de informação",/informa|desinforma|fake|conhecimento|ciencia|esclarec|verdade/g],["negligência familiar",/famil|\bpais\b|infancia|crianc/g],["manipulação midiática",/manipul|algoritm|vigilanc|plataforma|propaganda|dados/g],["influência midiática",/midia|redes|tela|influenc|imagem|espetacul|aprovacao/g],["preconceito",/preconceit|racis|estigma|discrimin|machis|capacit|etaris|xenof|aporofob|odio/g],["desigualdade",/desigual|pobre|pobreza|renda|periferi|exclu|fome|miseria/g],["lógica capitalista",/consum|lucro|mercado|capital|mercadoria|exploracao/g],["falta de empatia",/empatia|indiferen|banalidade|solid|individual|insensib/g],["herança histórica",/histor|escrav|colon|seculo|\b1[89]\d\d\b/g]];
+function guessEnc(r,ctx){const fromEnc=[...ctx].find(c=>c.startsWith("Encaminhamento: "));if(fromEnc)return fromEnc.slice(16).toLowerCase();
+const t=norm(r[0]+" "+r[3]+" "+r[4]);const sc=ENCMAP.map(([n,re])=>[n,(t.match(re)||[]).length]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+return sc.length?sc.slice(0,2).map(x=>x[0]).join(" ou "):""}
+function kind(r){const t=r[1];if(TYPES[2][1].test(t))return "lei";if(TYPES[3][1].test(t))return "obra";if(/dado/i.test(t))return "dado";if(/conceito|frase/i.test(t))return "conceito";if(/fato|personalidade/i.test(t))return "fato";return "pensador"}
+function refName(r){return r[0].split(" — ")[0].replace(/\s*\(.*?\)\s*$/,"")}
+function offlineHow(r,ctx,raw,lvl){const T=themePhrase(raw);const k=kind(r);const ref=refName(r);const enc=guessEnc(r,ctx);
+const where=r[2].split("·").map(x=>x.trim()).map(x=>({"Intro":"introdução","D1/D2":"desenvolvimento (D1 ou D2)","D1":"D1","D2":"D2","Proposta":"proposta de intervenção","Conclusão":"conclusão","Fechamento":"fechamento do parágrafo","Fim do parágrafo":"fim do parágrafo de desenvolvimento","Tese":"tese"}[x]||x)).join(" ou ");
+const TQ=`“${T}”`;
+const tie={lei:`Mostra o que ${ref} garante e, logo depois, que isso não se cumpre no tema ${TQ}. Usa "Embora ... garanta ..., na prática ..." e fecha dizendo o que essa falha provoca.`,
+pensador:`Explica a ideia de ${ref} em uma frase e aplica ao tema ${TQ} com "Tal lógica é perceptível na realidade brasileira, em que ...". Depois, faz a consequência nascer da ideia ("à luz de ${ref}, ...").`,
+obra:`Conta só o ponto da história que interessa e compara com o tema ${TQ}: se a realidade se parece com a obra, usa "à semelhança de" ou "fora da ficção"; se é o contrário, "diferentemente de". Retoma a obra no fechamento.`,
+fato:`Usa como prova de que o problema é real ou tem raiz: apresenta o fato com data e lugar e liga ao presente do tema ${TQ} ("Esse cenário ficou evidente quando ..." ou "Esse problema tem raízes históricas: ...").`,
+dado:`Fecha o parágrafo dimensionando o tema ${TQ}: cita a fonte e mostra o tamanho do problema. Não inventa número: se não lembrar o valor exato, fala da tendência.`,
+conceito:`Define o termo em uma frase e mostra como ele aparece no tema ${TQ}: "O termo ... diz respeito a ... Essa dinâmica aparece em ..., pois ...".`}[k];
+let eg=r[5]||"",lab="Frase pronta (adapta antes de usar)";
+if(eg)eg=eg.replace(/\[[^\]]*(tema|problema|grupo|direito|aspecto|servi[cç]o|situa[cç][aã]o|pr[aá]tica|recurso|acesso|risco)[^\]]*\]/gi,T);
+else{lab="Molde (completa os colchetes)";eg={lei:`Embora ${ref} [o que garante], na prática ${T} ainda [o que falha], o que [consequência].`,
+pensador:`Segundo ${ref}, [ideia do autor em uma frase]. Tal lógica é perceptível na realidade brasileira, em que ${T} [como o problema aparece].`,
+obra:`Na obra "${ref}", [o que acontece na história]. De forma análoga, no Brasil, ${T} [o problema parecido], visto que [a semelhança].`,
+fato:`Em [ano], ${ref} [o que aconteceu]. Na contemporaneidade, ainda persiste [a herança desse fato], evidenciada por ${T}.`,
+dado:`Segundo ${ref}, [o dado], o que evidencia a gravidade de ${T}.`,
+conceito:`O termo "${ref}" diz respeito a [definição]. Essa dinâmica aparece em ${T}, pois [mecanismo e consequência].`}[k]}
+const lv=lvl==="forte"?"forte":lvl==="médio"?"médio":"fraco";
+const why=lv==="forte"?"o repertório fala diretamente do assunto que você buscou.":lv==="médio"?"funciona, mas você precisa explicar bem a ligação com o tema.":"a ligação é indireta. Só usa se o seu argumento for exatamente esse recorte.";
+const encTxt=enc?`Combina com o encaminhamento ${esc(enc)}.`:"Escolhe o encaminhamento conforme o seu argumento.";
+return `<p><b>Encaixe:</b> ${lv}, porque ${why}</p><p><b>Onde entra:</b> ${esc(where)}. ${encTxt}</p><p><b>Como amarrar:</b> ${esc(tie)}</p><p class="eg"><b>${lab}:</b> ${esc(eg)}</p>`}
+const UNI=[],UMAP=new Map();
+IDX.forEach(x=>{const k=x.r[0];if(UMAP.has(k)){UNI[UMAP.get(k)].ctx.add(x.ctx);return}UMAP.set(k,UNI.length);UNI.push({r:x.r,ctx:new Set([x.ctx])})});
+let SAMPLE=null;const aiMem={};
+try{if(window.claude&&claude.use)claude.use("sample").then(s=>{if(s){SAMPLE=s;document.body.classList.add("ai")}}).catch(()=>{})}catch(e){}
+function aiErr(e){const c=e&&e.code;
+if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(c)){document.body.classList.remove("ai");return "O Claude não está liberado nesta página. Dá pra permitir no menu Permissões da página."}
+if(c==="rate_limited")return "Muitas perguntas seguidas. Espera um pouco e tenta de novo.";
+if(c==="session_expired")return "Sua sessão expirou. Entra de novo no Claude e tenta outra vez.";
+if(c==="cancelled")return "";
+return "Não deu certo agora. Toca de novo pra tentar."}
+let showAll=false,lastQ="";
+function renderSearch(raw){if(raw!==lastQ){showAll=false;lastQ=raw}
+const {list,exp,fixes}=search(raw);const top=list.length?list[0].sc:0;
+const shown=showAll?list:list.slice(0,40);
+const also=exp.filter(t=>t.length>2).slice(0,12);
+let html=`<section class="axis" id="busca"><div class="axis-head"><span class="num">⌕</span><h3>Resultados para "${esc(raw)}"</h3><p>${list.length?`${list.length} repertórios, do que mais encaixa pro que menos encaixa.`:"A busca rápida não achou nada com essa palavra."}${fixes.length?` Corrigi: ${esc(fixes.map(f=>f[0]+" → "+f[1]).join(", "))}.`:""}${also.length?` Também procurei por: ${esc(also.join(", "))}.`:""}</p></div>
+<div class="aibox ai-only"><div class="aihead"><button type="button" class="fbtn aibtn" id="aiexp">✦ Pedir pro Claude achar o que encaixa em "${esc(raw)}"</button><p class="mnote">Ele lê o caderno inteiro e entende sinônimos e temas parecidos, tipo "ribeirinhos" ou "agrotóxicos". Usa a sua conta do Claude.</p></div><div id="aires">${aiMem[raw]?aiHtml(aiMem[raw],raw):""}</div></div>`;
+if(list.length){html+=`<h4 class="subh">Busca rápida</h4><div class="grid">${shown.map(x=>card(x.r,{o:[...x.ctx],fit:x.sc>=top*.6,q:raw,lvl:x.sc>=top*.6?"forte":x.sc>=top*.3?"médio":"fraco"})).join("")}</div>`;
+if(list.length>shown.length)html+=`<button type="button" class="fbtn more" id="more">Mostrar mais ${list.length-shown.length}</button>`}
+html+=`</section>`;
+document.getElementById("out").innerHTML=html;
+document.getElementById("empty").hidden=true;
+document.getElementById("count").textContent=`${list.length} encontrados`;
+const mb=document.getElementById("more");if(mb)mb.addEventListener("click",()=>{showAll=true;renderSearch(raw)});
+prog()}
+function aiHtml(d,raw){const rel=(d.relacionados||[]).filter(x=>typeof x==="string").slice(0,10);
+const items=(d.itens||[]).map(it=>({u:UNI[Number(it&&it.n)],why:String((it&&it.porque)||"")})).filter(x=>x.u&&ok(x.u.r,"",""));
+if(!items.length)return `<p class="mnote">O Claude não achou nenhum repertório do caderno que encaixe bem nesse tema${rel.length?` (pensou em: ${esc(rel.join(", "))})`:""}. Tenta um termo mais geral.</p>`;
+return `${rel.length?`<p class="mnote"><b>O Claude relacionou com:</b> ${esc(rel.join(", "))}</p>`:""}<div class="grid">${items.map((x,i)=>card(x.u.r,{o:[...x.u.ctx],q:raw,why:x.why,lvl:i<5?"forte":"médio"})).join("")}</div>`}
+async function aiExpand(btn){const raw=document.getElementById("q").value.trim();if(!SAMPLE||!raw)return;
+const box=document.getElementById("aires");btn.disabled=true;const old=btn.textContent;btn.textContent="✦ Pensando…";box.innerHTML='<p class="mnote">Lendo o caderno e procurando o que encaixa…</p>';
+const lines=UNI.map((u,i)=>`${i} | ${u.r[0]} | ${u.r[1]} | ${[...u.ctx].join(" / ")}`).join("\n");
+const prompt=`Você ajuda um estudante brasileiro a escolher repertórios para a redação do ENEM.
+Busca do estudante: "${raw}"
+Abaixo está a lista numerada dos repertórios do caderno dele (número | nome | tipo | seção).
+Escolha até 15 que realmente encaixam nesse tema ou palavra, do mais para o menos pertinente. Pense em sinônimos, temas relacionados e nos argumentos que esse tema costuma pedir (por exemplo: "ribeirinhos" se liga a comunidades tradicionais, Amazônia, rios, povos indígenas, desigualdade regional, falha estatal). Não force: o que encaixa pouco fica de fora.
+Responda só com JSON neste formato: {"relacionados":["até 8 palavras ou temas relacionados"],"itens":[{"n":0,"porque":"até 18 palavras, em português informal, dizendo por que encaixa nesse tema"}]}
+
+Lista:
+${lines}`;
+try{const d=await SAMPLE.json(prompt,{modelTier:"quick"});aiMem[raw]=d&&typeof d==="object"?d:{};
+if(document.getElementById("q").value.trim()===raw){const b2=document.getElementById("aires");if(b2)b2.innerHTML=aiHtml(aiMem[raw],raw)}}
+catch(e){const m=aiErr(e);const b2=document.getElementById("aires");if(b2)b2.innerHTML=m?`<p class="mnote err">${esc(m)}</p>`:""}
+finally{const b3=document.getElementById("aiexp");if(b3){b3.disabled=false;b3.textContent=old}}}
+function fmtHow(t){return t.split(/\n+/).filter(l=>l.trim()).map(l=>{const m=l.match(/^\s*(Encaixe|Onde entra|Como amarrar|Frase pronta)\s*:\s*(.*)$/i);return m?`<p class="${/frase/i.test(m[1])?"eg":""}"><b>${esc(m[1])}:</b> ${esc(m[2])}</p>`:`<p>${esc(l)}</p>`}).join("")}
+async function aiHow(btn){const card=btn.closest(".card");const n=decodeURIComponent(btn.dataset.k);const u=UNI[UMAP.get(n)];const raw=btn.dataset.q;if(!SAMPLE||!u)return;
+const box=card.querySelector(".aiout");
+btn.disabled=true;box.innerHTML='<p class="mnote">Pensando em como usar esse repertório no seu tema…</p>';
+const r=u.r;const prompt=`Você é professor de redação do ENEM e fala com um aluno do ensino médio, em português do Brasil, com tom direto e informal.
+Tema ou busca do aluno: "${raw}"
+Repertório: ${r[0]} (${r[1]})
+O que ele diz: ${r[3]}
+Como costuma ser usado: ${r[4]}
+${r[6]?"Cuidado já anotado: "+r[6]:""}
+Explique como usar ESSE repertório NESSE tema, de forma específica para o tema. Não invente dados, números, datas ou citações que não estejam acima. Se o encaixe for fraco, diga isso com franqueza e mostre o recorte em que funciona.
+Responda em exatamente 4 linhas, sem markdown, começando cada uma com o rótulo:
+Encaixe: forte, médio ou fraco, e por quê, em 1 frase
+Onde entra: introdução, D1, D2 ou proposta, e qual encaminhamento (ex.: falha estatal, falta de informação, lógica capitalista)
+Como amarrar: 2 frases explicando a ligação entre o repertório, o argumento e o tema
+Frase pronta: um trecho de 1 a 2 períodos, em norma culta, pronto pra usar na redação sobre esse tema`;
+try{await SAMPLE(prompt,{modelTier:"quick",onText:({text})=>{box.innerHTML=fmtHow(text)}});btn.remove()}
+catch(e){const m=aiErr(e);box.innerHTML=(e&&e.text?fmtHow(e.text):"")+(m?`<p class="mnote err">${esc(m)}</p>`:"")}
+finally{btn.disabled=false}}
+function render(){const q=document.getElementById("q").value.trim().toLowerCase();let html="",tot=0,eh="",ec=0;
+document.body.classList.toggle("review",S.rev);if(q){renderSearch(document.getElementById("q").value.trim());return}
+ENC.forEach(e=>{const rs=e.r.filter(r=>ok(r,e.t+" "+e.w,q));if(!rs.length)return;ec+=rs.length;
+eh+=`<div class="enc"><div class="enc-head"><h4>${esc(e.t)}</h4><p>${esc(e.w)}</p><p class="tf"><b>Tópico frasal modelo · </b>${esc(e.tf)}</p></div><div class="grid">${rs.map(card).join("")}</div></div>`});
+if(ec){tot+=ec;html+=`<section class="axis" id="enc"><div class="axis-head"><span class="num">→</span><h3>Encaminhamentos argumentativos</h3><p>As 11 causas que mais aparecem, com 2 repertórios cada. Escolhe a causa e já sai com o repertório e a frase prontos.</p></div>${eh}</section>`}
+AX.forEach((a,k)=>{const rs=a.r.filter(r=>ok(r,a.t,q));if(!rs.length)return;tot+=rs.length;
+html+=`<section class="axis" id="${a.id}"><div class="axis-head"><span class="num">${String(k).padStart(2,"0")}</span><h3>${esc(a.t)}</h3><p>${esc(a.s)} · ${rs.length} repertórios</p></div><div class="grid">${rs.map(card).join("")}</div></section>`});
+document.getElementById("out").innerHTML=html;document.getElementById("empty").hidden=tot>0;
+const filt=q||S.tf||S.pf||S.hide;document.getElementById("count").textContent=filt?`${tot} encontrados`:`${ALL.size} repertórios`;prog()}
+document.getElementById("navs").innerHTML=`<a href="#enc">Encaminhamentos</a>`+AX.map(a=>`<a href="#${a.id}">${esc(a.t.split(",")[0])}</a>`).join("")+`<a href="#modelos">Modelos</a>`;
+const ft=document.getElementById("ftype"),fp=document.getElementById("fpos"),fs=document.getElementById("fshow"),fc=document.getElementById("fclear"),rv=document.getElementById("trev");
+ft.innerHTML=TYPES.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join("");
+fp.innerHTML=POS.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join("");
+function toTop(){const o=document.getElementById("out"),bar=document.querySelector(".tools");const y=o.getBoundingClientRect().top+window.scrollY-bar.offsetHeight-8;if(window.scrollY>y)window.scrollTo({top:y})}
+function apply(){S.tf=TYPES[+ft.value][1];S.pf=POS[+fp.value][1];S.hide=fs.value==="left";
+[ft,fp,fs].forEach(x=>x.classList.toggle("on",x.selectedIndex>0));fc.hidden=!(S.tf||S.pf||S.hide||document.getElementById("q").value);render();toTop()}
+[ft,fp,fs].forEach(x=>x.addEventListener("change",apply));
+fc.addEventListener("click",()=>{ft.value="0";fp.value="0";fs.value="all";document.getElementById("q").value="";apply()});
+rv.addEventListener("click",()=>{S.rev=!S.rev;rv.setAttribute("aria-pressed",S.rev);render()});
+document.getElementById("q").addEventListener("input",()=>{fc.hidden=!(S.tf||S.pf||S.hide||document.getElementById("q").value)});
+const out=document.getElementById("out");
+out.addEventListener("click",e=>{const ab=e.target.closest(".aimore");if(ab){e.stopPropagation();aiHow(ab);return}const hb=e.target.closest(".howbtn");if(hb){e.stopPropagation();const c=hb.closest(".card"),bx=c.querySelector(".how");if(hb.dataset.done){bx.hidden=!bx.hidden;return}const n=decodeURIComponent(hb.dataset.k),u=UNI[UMAP.get(n)];if(!u)return;bx.innerHTML=offlineHow(u.r,u.ctx,hb.dataset.q,hb.dataset.l)+`<button type="button" class="aimore ai-only" data-k="${hb.dataset.k}" data-q="${esc(hb.dataset.q)}">✦ Explicação mais completa com o Claude</button><div class="aiout"></div>`;bx.hidden=false;hb.dataset.done="1";return}if(e.target.closest("#aiexp")){aiExpand(e.target.closest("#aiexp"));return}if(e.target.closest(".how"))return;const b=e.target.closest(".dom");if(b){e.stopPropagation();const n=decodeURIComponent(b.dataset.k);dom.has(n)?dom.delete(n):dom.add(n);save();
+if(S.hide){render();return}document.querySelectorAll(`.card[data-k="${b.dataset.k}"]`).forEach(c=>{const d=dom.has(n);c.classList.toggle("done",d);const x=c.querySelector(".dom");x.setAttribute("aria-pressed",d);x.textContent=d?"✓ Entendi":"☐ Entendi"});prog();return}
+const c=e.target.closest(".card");if(c&&S.rev){c.classList.toggle("open");c.setAttribute("aria-expanded",c.classList.contains("open"))}});
+out.addEventListener("keydown",e=>{if(!S.rev||(e.key!=="Enter"&&e.key!==" "))return;const c=e.target.closest(".card");if(c&&e.target===c){e.preventDefault();c.click()}});
+let qt;document.getElementById("q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(()=>{render();toTop()},150)});
+document.querySelectorAll(".sug").forEach(b=>b.addEventListener("click",()=>{const q=document.getElementById("q");q.value=b.dataset.q;fc.hidden=false;render();toTop();q.focus()}));
+render();
+</script>
