@@ -185,6 +185,31 @@ body.ai .aibox.ai-only{display:grid!important}
 .aiout:empty{display:none}
 .aiout{display:grid;gap:6px;border-top:1px dashed var(--rule);padding-top:8px}
 .howbtn{border-style:solid}
+.tester{margin-top:20px;background:var(--sheet);border:1.5px solid var(--ink);padding:20px 22px;display:grid;gap:14px;scroll-margin-top:16px}
+.t-head p{margin:0;font-size:15px;color:var(--muted)}
+h2.sec.t-h{margin:4px 0 6px}
+.t-log{display:grid;gap:10px}
+.msg{max-width:min(100%,680px);padding:12px 14px;border-radius:12px;font-size:15px;display:grid;gap:8px;min-width:0}
+.msg p{margin:0}
+.msg.me{justify-self:end;background:var(--ink);color:var(--paper);border-bottom-right-radius:3px}
+.msg.me b{color:var(--paper)}
+.msg.bot{justify-self:start;background:var(--chip);border-bottom-left-radius:3px}
+.msg.bot .eg{border-left:2px solid var(--pen);padding-left:10px}
+.verdict{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:21px;line-height:1.15}
+.v-forte{color:var(--pen)}.v-medio{color:var(--ink)}.v-fraco{color:var(--margin)}
+.t-form{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:10px;align-items:end;border-top:1px dashed var(--rule);padding-top:14px}
+.tfield{display:grid;gap:4px;min-width:0}
+.tfield span{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tfield textarea,.tfield input{font:inherit;font-size:15px;padding:9px 10px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:4px;width:100%;min-width:0;resize:vertical}
+.tfield textarea:focus-visible,.tfield input:focus-visible{outline:3px solid var(--pen);outline-offset:1px}
+.t-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.alts{display:flex;flex-wrap:wrap;gap:6px}
+.alt{font-family:var(--mono);font-size:12px;padding:5px 10px;border:1px solid var(--pen);background:var(--sheet);color:var(--pen);border-radius:999px;cursor:pointer;text-align:left}
+.alt:hover{background:var(--paper)}
+.aimore{justify-self:start;font-family:var(--mono);font-size:12px;padding:6px 10px;border:1px solid var(--pen);background:var(--sheet);color:var(--pen);border-radius:4px;cursor:pointer}
+.aiout:empty{display:none}
+.aiout{display:grid;gap:6px;border-top:1px dashed var(--rule);padding-top:8px}
+@media (max-width:640px){.t-form{grid-template-columns:1fr}.tester{padding:16px}}
 </style>
 
 <div class="wrap">
@@ -231,6 +256,16 @@ body.ai .aibox.ai-only{display:grid!important}
   <div class="kit-search"><span class="eyebrow">Pesquisa inteligente</span><p>Escreve uma palavra ou cola o tema da redação na busca. Aparecem os repertórios que encaixam, do mais pro menos, e ela entende sinônimos e corrige erros de digitação. Em cada resultado, o botão <b>Como usar</b> mostra onde o repertório entra, como amarrar no seu tema e uma frase modelo. Experimenta:</p><div class="sugs"><button type="button" class="sug" data-q="ia">ia</button><button type="button" class="sug" data-q="idoso">idoso</button><button type="button" class="sug" data-q="fake news">fake news</button><button type="button" class="sug" data-q="lixo">lixo</button><button type="button" class="sug" data-q="saúde mental dos jovens">saúde mental dos jovens</button><button type="button" class="sug" data-q="Desafios para a valorização dos povos indígenas no Brasil">tema inteiro</button></div></div>
   <div class="kit-prog" aria-live="polite"><div class="meter alt"><span id="mall"></span></div><p id="pall"></p></div>
 </section>
+<section class="tester" id="testar" aria-label="Testar encaixe">
+  <div class="t-head"><span class="eyebrow">Testar encaixe</span><h2 class="sec t-h">O repertório combina com o tema?</h2><p>Escreve o tema, escolhe o repertório e vê se os dois encaixam, onde usar e como amarrar.</p></div>
+  <div class="t-log" id="tlog" aria-live="polite"></div>
+  <form class="t-form" id="tform">
+    <label class="tfield"><span>Tema da redação</span><textarea id="ttema" rows="2" placeholder="Ex.: Desafios para a valorização dos povos ribeirinhos no Brasil"></textarea></label>
+    <label class="tfield"><span>Repertório</span><input id="trep" list="treplist" placeholder="Começa a digitar: Bauman, Torto Arado, CF…" autocomplete="off"><datalist id="treplist"></datalist></label>
+    <div class="t-actions"><button type="submit" class="fbtn aibtn" id="tgo">Testar encaixe</button><button type="button" class="fbtn" id="tclear" hidden>Limpar conversa</button></div>
+  </form>
+</section>
+
 
 
 
@@ -675,16 +710,16 @@ IDX.forEach(x=>{const r=x.r;x.f=[[norm(r[0]),6],[norm(r[4]),4],[norm(r[3]),3],[n
 const rq=t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
 const stem=t=>{let b=t;if(b.length>=5&&b.endsWith("s"))b=b.slice(0,-1);if(b.length>=7)b=b.slice(0,-2);return b};
 const B="(^|[^a-z0-9])";
-function rxTok(t){const b=stem(t);return b.length<4?new RegExp(B+rq(t)+"(?![a-z0-9])"):new RegExp(B+rq(b)+"[a-z]*")}
+function rxTok(t){const b=stem(t);return b.length<4?new RegExp(B+rq(t)+"(?![a-z0-9])"):new RegExp(B+rq(b)+"[a-z]{0,4}(?![a-z0-9])")}
 function rxTerm(t){return t.includes(" ")?new RegExp(B+t.split(/\s+/).map(rq).join("\\s+")):new RegExp(B+rq(t)+"(s|es)?(?![a-z0-9])")}
 function search(raw){const qn=norm(raw);let toks=[...new Set(qn.split(/[^a-z0-9]+/).filter(t=>t&&!STOP.has(t)))];const fixes=[];if(typeof fixTok==="function")toks=toks.map(t=>{const f=fixTok(t);if(f){fixes.push([t,f]);return f}return t});
-const exp=new Set();
-GROUPS.forEach(g=>{const hit=g.some(term=>{const tn=norm(term);if(tn.includes(" "))return qn.includes(tn);return toks.some(t=>t===tn||(t.length>=4&&tn.length>=4&&(tn.startsWith(stem(t))||t.startsWith(tn))))});if(hit)g.forEach(term=>exp.add(norm(term)))});
-toks.forEach(t=>exp.delete(t));
-const dR=toks.map(rxTok),eR=[...exp].map(rxTerm);
+const expW=new Map();
+GROUPS.forEach(g=>{let strong=false,hit=false;g.forEach(term=>{const tn=norm(term);if(tn.includes(" ")){if(qn.includes(tn)){hit=strong=true}}else if(toks.includes(tn)){hit=strong=true}else if(toks.some(t=>t.length>=4&&tn.length>=4&&(tn.startsWith(stem(t))||t.startsWith(tn))))hit=true});if(hit){const w=strong?.9:.5;g.forEach(term=>{const tn=norm(term);expW.set(tn,Math.max(expW.get(tn)||0,w))})}});
+toks.forEach(t=>expW.delete(t));const exp=new Set(expW.keys());
+const dR=toks.map(rxTok),eR=[...exp].map(t=>[rxTerm(t),expW.get(t)]);
 const best=new Map();
 IDX.forEach(x=>{if(!ok(x.r,"",""))return;let sc=0;const hitTok=new Set();
-x.f.forEach(([txt,w])=>{dR.forEach((re,i)=>{if(re.test(txt)){sc+=w;hitTok.add(i)}});let e=0;eR.forEach(re=>{if(re.test(txt))e+=w*.5});sc+=Math.min(e,w*1.5)});
+x.f.forEach(([txt,w])=>{dR.forEach((re,i)=>{if(re.test(txt)){sc+=w;hitTok.add(i)}});let e=0;eR.forEach(([re,ew])=>{if(re.test(txt))e+=w*ew});sc+=Math.min(e,w*2)});
 if(toks.length>1&&hitTok.size===toks.length)sc+=4;
 if(sc<1)return;const k=x.r[0],cur=best.get(k);
 if(cur){cur.ctx.add(x.ctx);if(sc>cur.sc){cur.sc=sc;cur.r=x.r}}else best.set(k,{r:x.r,sc,ctx:new Set([x.ctx])})});
@@ -705,6 +740,7 @@ const t=norm(r[0]+" "+r[3]+" "+r[4]);const sc=ENCMAP.map(([n,re])=>[n,(t.match(r
 return sc.length?sc.slice(0,2).map(x=>x[0]).join(" ou "):""}
 function kind(r){const t=r[1];if(TYPES[2][1].test(t))return "lei";if(TYPES[3][1].test(t))return "obra";if(/dado/i.test(t))return "dado";if(/conceito|frase/i.test(t))return "conceito";if(/fato|personalidade/i.test(t))return "fato";return "pensador"}
 function refName(r){return r[0].split(" — ")[0].replace(/\s*\(.*?\)\s*$/,"")}
+function contract(t){const M=[["de","a","da"],["de","o","do"],["de","as","das"],["de","os","dos"],["em","a","na"],["em","o","no"],["em","as","nas"],["em","os","nos"],["por","a","pela"],["por","o","pelo"],["por","as","pelas"],["por","os","pelos"],["a","a","à"],["a","o","ao"],["a","as","às"],["a","os","aos"]];M.forEach(([p,a,r])=>{t=t.replace(new RegExp("(^|[\\s(])"+p+" "+a+" ","gi"),(m,pre)=>pre+r+" ")});return t}
 function offlineHow(r,ctx,raw,lvl){const T=themePhrase(raw);const k=kind(r);const ref=refName(r);const enc=guessEnc(r,ctx);
 const where=r[2].split("·").map(x=>x.trim()).map(x=>({"Intro":"introdução","D1/D2":"desenvolvimento (D1 ou D2)","D1":"D1","D2":"D2","Proposta":"proposta de intervenção","Conclusão":"conclusão","Fechamento":"fechamento do parágrafo","Fim do parágrafo":"fim do parágrafo de desenvolvimento","Tese":"tese"}[x]||x)).join(" ou ");
 const TQ=`“${T}”`;
@@ -722,7 +758,7 @@ obra:`Na obra "${ref}", [o que acontece na história]. De forma análoga, no Bra
 fato:`Em [ano], ${ref} [o que aconteceu]. Na contemporaneidade, ainda persiste [a herança desse fato], evidenciada por ${T}.`,
 dado:`Segundo ${ref}, [o dado], o que evidencia a gravidade de ${T}.`,
 conceito:`O termo "${ref}" diz respeito a [definição]. Essa dinâmica aparece em ${T}, pois [mecanismo e consequência].`}[k]}
-const lv=lvl==="forte"?"forte":lvl==="médio"?"médio":"fraco";
+eg=contract(eg);const lv=lvl==="forte"?"forte":lvl==="médio"?"médio":"fraco";
 const why=lv==="forte"?"o repertório fala diretamente do assunto que você buscou.":lv==="médio"?"funciona, mas você precisa explicar bem a ligação com o tema.":"a ligação é indireta. Só usa se o seu argumento for exatamente esse recorte.";
 const encTxt=enc?`Combina com o encaminhamento ${esc(enc)}.`:"Escolhe o encaminhamento conforme o seu argumento.";
 return `<p><b>Encaixe:</b> ${lv}, porque ${why}</p><p><b>Onde entra:</b> ${esc(where)}. ${encTxt}</p><p><b>Como amarrar:</b> ${esc(tie)}</p><p class="eg"><b>${lab}:</b> ${esc(eg)}</p>`}
@@ -798,7 +834,7 @@ AX.forEach((a,k)=>{const rs=a.r.filter(r=>ok(r,a.t,q));if(!rs.length)return;tot+
 html+=`<section class="axis" id="${a.id}"><div class="axis-head"><span class="num">${String(k).padStart(2,"0")}</span><h3>${esc(a.t)}</h3><p>${esc(a.s)} · ${rs.length} repertórios</p></div><div class="grid">${rs.map(card).join("")}</div></section>`});
 document.getElementById("out").innerHTML=html;document.getElementById("empty").hidden=tot>0;
 const filt=q||S.tf||S.pf||S.hide;document.getElementById("count").textContent=filt?`${tot} encontrados`:`${ALL.size} repertórios`;prog()}
-document.getElementById("navs").innerHTML=`<a href="#enc">Encaminhamentos</a>`+AX.map(a=>`<a href="#${a.id}">${esc(a.t.split(",")[0])}</a>`).join("")+`<a href="#modelos">Modelos</a>`;
+document.getElementById("navs").innerHTML=`<a href="#testar">Testar encaixe</a><a href="#enc">Encaminhamentos</a>`+AX.map(a=>`<a href="#${a.id}">${esc(a.t.split(",")[0])}</a>`).join("")+`<a href="#modelos">Modelos</a>`;
 const ft=document.getElementById("ftype"),fp=document.getElementById("fpos"),fs=document.getElementById("fshow"),fc=document.getElementById("fclear"),rv=document.getElementById("trev");
 ft.innerHTML=TYPES.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join("");
 fp.innerHTML=POS.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join("");
@@ -816,5 +852,50 @@ const c=e.target.closest(".card");if(c&&S.rev){c.classList.toggle("open");c.setA
 out.addEventListener("keydown",e=>{if(!S.rev||(e.key!=="Enter"&&e.key!==" "))return;const c=e.target.closest(".card");if(c&&e.target===c){e.preventDefault();c.click()}});
 let qt;document.getElementById("q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(()=>{render();toTop()},150)});
 document.querySelectorAll(".sug").forEach(b=>b.addEventListener("click",()=>{const q=document.getElementById("q");q.value=b.dataset.q;fc.hidden=false;render();toTop();q.focus()}));
+(function(){
+const log=document.getElementById("tlog"),form=document.getElementById("tform"),tt=document.getElementById("ttema"),tr=document.getElementById("trep"),tc=document.getElementById("tclear");
+document.getElementById("treplist").innerHTML=UNI.map(u=>`<option value="${esc(u.r[0])}"></option>`).join("");
+let lastTheme="";
+function welcome(){log.innerHTML=`<div class="msg bot"><p>Me manda o tema da redação e o repertório que você quer usar. Eu digo se encaixa, onde entra e como amarrar.</p><p><button type="button" class="alt" id="texample">Ver um exemplo</button></p></div>`}
+welcome();
+function findRep(v){const n=norm(v).trim();if(!n)return null;let u=UNI.find(x=>norm(x.r[0])===n)||UNI.find(x=>norm(x.r[0]).startsWith(n))||(n.length>=4?UNI.find(x=>norm(x.r[0]).includes(n)):null);if(u)return u;
+const toks=n.split(/[^a-z0-9]+/).filter(t=>t.length>=4);if(!toks.length)return null;let best=null,bs=0;UNI.forEach(x=>{const ws=norm(x.r[0]).split(/[^a-z0-9]+/);const c=toks.filter(t=>ws.some(w=>w.startsWith(t))).length;if(c>bs){bs=c;best=x}});return bs>=Math.ceil(toks.length/2)?best:null}
+function rank(theme,name){const keep={tf:S.tf,pf:S.pf,hide:S.hide};S.tf=null;S.pf=null;S.hide=false;let res;try{res=search(theme)}finally{Object.assign(S,keep)}
+const list=res.list,top=list.length?list[0].sc:0,i=list.findIndex(x=>x.r[0]===name),sc=i>=0?list[i].sc:0,ratio=top?sc/top:0;
+return {lvl:ratio>=.55?"forte":ratio>=.25?"médio":"fraco",pos:i,alts:list.filter(x=>x.r[0]!==name).slice(0,3).map(x=>x.r[0]),n:list.length}}
+const altBtns=a=>`<div class="alts">${a.map(x=>`<button type="button" class="alt" data-rep="${esc(x)}">${esc(x)}</button>`).join("")}</div>`;
+function test(theme,repTxt){theme=theme.trim();if(!theme){tt.focus();return}lastTheme=theme;
+const u=findRep(repTxt);
+const me=document.createElement("div");me.className="msg me";me.innerHTML=`<p><b>Tema:</b> ${esc(theme)}</p><p><b>Repertório:</b> ${esc(u?u.r[0]:(repTxt.trim()||"nenhum"))}</p>`;log.appendChild(me);
+const bot=document.createElement("div");bot.className="msg bot";
+if(!u){const sug=rank(theme,"").alts;bot.innerHTML=`<p>${repTxt.trim()?"Não achei esse repertório no caderno. Confere o nome ou escolhe um da lista que aparece enquanto você digita.":"Faltou escolher o repertório."}</p>${sug.length?`<p class="mnote"><b>Pra esse tema, os que mais encaixam são:</b></p>${altBtns(sug)}`:""}`}
+else{const k=rank(theme,u.r[0]);const V={"forte":["✓ Encaixa bem","v-forte"],"médio":["~ Encaixa, mas precisa de uma boa ponte","v-medio"],"fraco":["✗ Encaixe fraco","v-fraco"]}[k.lvl];
+const posTxt=k.pos>=0?`Pelo caderno, é o ${k.pos+1}º repertório que mais combina com esse tema (de ${k.n}).`:"Pelo caderno, esse repertório não tem ligação direta com as palavras do tema.";
+bot.innerHTML=`<p class="verdict ${V[1]}">${V[0]}</p><p class="mnote">${posTxt}</p>${offlineHow(u.r,u.ctx,theme,k.lvl)}${k.lvl!=="forte"&&k.alts.length?`<p class="mnote"><b>Encaixam melhor nesse tema:</b></p>${altBtns(k.alts)}`:""}<button type="button" class="aimore ai-only tai">✦ Pedir a opinião do Claude</button><div class="aiout"></div>`;
+bot.dataset.theme=theme;bot.dataset.rep=u.r[0]}
+log.appendChild(bot);tc.hidden=false;me.scrollIntoView({behavior:"smooth",block:"start"})}
+async function aiCompat(btn){const bot=btn.closest(".msg");const u=UNI[UMAP.get(bot.dataset.rep)];const theme=bot.dataset.theme;if(!SAMPLE||!u)return;const box=bot.querySelector(".aiout");btn.disabled=true;box.innerHTML='<p class="mnote">Pensando…</p>';const r=u.r;
+const prompt=`Você é professor de redação do ENEM e fala com um aluno do ensino médio, em português do Brasil, com tom direto e informal.
+Tema da redação: "${theme}"
+Repertório que o aluno quer usar: ${r[0]} (${r[1]})
+O que ele diz: ${r[3]}
+Como costuma ser usado: ${r[4]}
+Avalie com franqueza se esse repertório encaixa nesse tema. Não invente dados, números, datas ou citações que não estejam acima. Se o encaixe for fraco, diga isso e mostre o recorte em que funcionaria.
+Responda em exatamente 4 linhas, sem markdown, começando cada uma com o rótulo:
+Encaixe: forte, médio ou fraco, e por quê, em 1 frase
+Onde entra: introdução, D1, D2 ou proposta, e qual encaminhamento
+Como amarrar: 2 frases explicando a ligação entre o repertório, o argumento e o tema
+Frase pronta: um trecho de 1 a 2 períodos, em norma culta, pronto pra usar nessa redação`;
+try{await SAMPLE(prompt,{modelTier:"quick",onText:({text})=>{box.innerHTML=fmtHow(text)}});btn.remove()}
+catch(e){const m=aiErr(e);box.innerHTML=(e&&e.text?fmtHow(e.text):"")+(m?`<p class="mnote err">${esc(m)}</p>`:"")}
+finally{if(btn.isConnected)btn.disabled=false}}
+form.addEventListener("submit",e=>{e.preventDefault();test(tt.value,tr.value)});
+tt.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();test(tt.value,tr.value)}});
+log.addEventListener("click",e=>{const a=e.target.closest(".alt[data-rep]");if(a){tr.value=a.dataset.rep;test(lastTheme||tt.value,a.dataset.rep);return}
+if(e.target.closest("#texample")){tt.value="Desafios para a valorização dos povos ribeirinhos no Brasil";tr.value="Chico Mendes";test(tt.value,tr.value);return}
+const b=e.target.closest(".tai");if(b)aiCompat(b)});
+tc.addEventListener("click",()=>{welcome();tc.hidden=true;lastTheme=""});
+})();
+
 render();
 </script>
