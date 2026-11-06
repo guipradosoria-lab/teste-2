@@ -215,6 +215,33 @@ h2.sec.t-h{margin:4px 0 6px}
 .checks{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px}
 .checks li.ok{color:var(--pen)}
 .checks li.no{color:var(--ink)}
+.otabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.otab{font-family:var(--mono);font-size:13px;font-weight:700;padding:9px 14px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);border-radius:999px;cursor:pointer}
+.otab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.otab:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.opanel{display:grid;gap:14px}
+.opanel[hidden]{display:none}
+.pdesc{margin:0;font-size:15px;color:var(--muted)}
+.t-form.one{grid-template-columns:1fr}
+.msg.wide{max-width:100%}
+.causes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:8px}
+.cause{display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:10px 12px;cursor:pointer;font-size:14.5px;min-width:0}
+.cause input{margin-top:3px;accent-color:var(--pen);flex:none;width:18px;height:18px}
+.cause span{display:grid;gap:2px;min-width:0}
+.cause b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cause.on{border-color:var(--pen);background:var(--chip)}
+.cause.on b{color:var(--pen)}
+.cause.own{border-style:dashed}
+.mode{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.mode .flbl{min-width:92px}
+.alt.on{background:var(--pen);color:var(--sheet)}
+.thesisbox,.discuss{display:grid;gap:8px;border-top:1px dashed var(--rule);padding-top:12px}
+.tese{margin:0;font-size:16.5px;background:var(--hl);color:var(--hl-ink);padding:10px 12px;border-radius:4px}
+.qa{display:grid;gap:10px}
+.qitem{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;display:grid;gap:4px}
+.qitem p{margin:0}
+.qq{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:17px;display:flex;gap:8px;align-items:baseline}
+.qn{font-family:var(--mono);font-size:12px;color:var(--sheet);background:var(--margin);border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;flex:none}
 </style>
 
 <div class="wrap">
@@ -261,8 +288,17 @@ h2.sec.t-h{margin:4px 0 6px}
   <div class="kit-search"><span class="eyebrow">Pesquisa inteligente</span><p>Escreve uma palavra ou cola o tema da redação na busca. Aparecem os repertórios que encaixam, do mais pro menos, e ela entende sinônimos e corrige erros de digitação. Em cada resultado, o botão <b>Como usar</b> mostra onde o repertório entra, como amarrar no seu tema e uma frase modelo. Experimenta:</p><div class="sugs"><button type="button" class="sug" data-q="ia">ia</button><button type="button" class="sug" data-q="idoso">idoso</button><button type="button" class="sug" data-q="fake news">fake news</button><button type="button" class="sug" data-q="lixo">lixo</button><button type="button" class="sug" data-q="saúde mental dos jovens">saúde mental dos jovens</button><button type="button" class="sug" data-q="Desafios para a valorização dos povos indígenas no Brasil">tema inteiro</button></div></div>
   <div class="kit-prog" aria-live="polite"><div class="meter alt"><span id="mall"></span></div><p id="pall"></p></div>
 </section>
-<section class="tester" id="testar" aria-label="Testar encaixe">
-  <div class="t-head"><span class="eyebrow">Testar encaixe</span><h2 class="sec t-h">O repertório combina com o tema?</h2><p>Escreve o tema, escolhe o repertório e vê se os dois encaixam, onde usar e como amarrar.</p></div>
+<section class="tester" id="testar" aria-label="Oficina da redação">
+  <div class="t-head"><span class="eyebrow">Oficina da redação</span><h2 class="sec t-h">Teste, monte e destrinche o seu argumento</h2>
+    <div class="otabs" role="tablist" aria-label="Ferramentas">
+      <button type="button" role="tab" class="otab" id="tab-test" aria-selected="true" aria-controls="pTest">Testar encaixe</button>
+      <button type="button" role="tab" class="otab" id="tab-tese" aria-selected="false" aria-controls="pTese">Montar tese</button>
+      <button type="button" role="tab" class="otab" id="tab-5" aria-selected="false" aria-controls="p5">5 perguntas</button>
+    </div>
+  </div>
+  <div id="pTest" role="tabpanel" aria-labelledby="tab-test" class="opanel">
+  <p class="pdesc">Escreve o tema, escolhe o repertório e vê se os dois encaixam, onde usar e como amarrar. Se discordar, defende o seu ponto.</p>
+
   <div class="t-log" id="tlog" aria-live="polite"></div>
   <form class="t-reply" id="treply" hidden><label class="tfield"><span id="rlabel">Discorda do veredito? Explica por que você acha que encaixa.</span><textarea id="rarg" rows="3" placeholder="Ex.: Acho que encaixa porque…"></textarea></label><button type="submit" class="fbtn aibtn">Enviar argumento</button></form>
   <form class="t-form" id="tform">
@@ -270,6 +306,18 @@ h2.sec.t-h{margin:4px 0 6px}
     <label class="tfield"><span>Repertório</span><input id="trep" list="treplist" placeholder="Começa a digitar: Bauman, Torto Arado, CF…" autocomplete="off"><datalist id="treplist"></datalist></label>
     <div class="t-actions"><button type="submit" class="fbtn aibtn" id="tgo">Testar encaixe</button><button type="button" class="fbtn" id="tclear" hidden>Limpar conversa</button></div>
   </form>
+  </div>
+  <div id="pTese" role="tabpanel" aria-labelledby="tab-tese" class="opanel" hidden>
+    <p class="pdesc">Escreve o tema da redação. Eu levanto os problemas mais prováveis, você escolhe os que fazem sentido e a tese vai se montando. Dá pra discutir cada causa e sugerir a sua.</p>
+    <form class="t-form one" id="seform"><label class="tfield"><span>Tema da redação</span><textarea id="setema" rows="2" placeholder="Ex.: Desafios para a valorização dos povos ribeirinhos no Brasil"></textarea></label><div class="t-actions"><button type="submit" class="fbtn aibtn">Analisar tema</button><button type="button" class="alt" id="seex">Ver um exemplo</button></div></form>
+    <div id="seout"></div>
+  </div>
+  <div id="p5" role="tabpanel" aria-labelledby="tab-5" class="opanel" hidden>
+    <p class="pdesc">Coloca o tema e o argumento que você vai usar na tese. Eu respondo as 5 perguntas que transformam o argumento num parágrafo: por que é um problema, causas, quem sofre, consequências e o que impede a solução.</p>
+    <form class="t-form" id="qform"><label class="tfield"><span>Tema da redação</span><textarea id="qtema" rows="2" placeholder="Ex.: Desafios para a valorização dos povos ribeirinhos no Brasil"></textarea></label><label class="tfield"><span>Argumento da tese</span><textarea id="qarg" rows="2" placeholder="Ex.: a omissão do poder público"></textarea></label><div class="t-actions"><button type="submit" class="fbtn aibtn">Gerar respostas</button><button type="button" class="alt" id="qex">Ver um exemplo</button></div></form>
+    <div id="qout"></div>
+  </div>
+
 </section>
 
 
@@ -873,7 +921,7 @@ AX.forEach((a,k)=>{const rs=a.r.filter(r=>ok(r,a.t,q));if(!rs.length)return;tot+
 html+=`<section class="axis" id="${a.id}"><div class="axis-head"><span class="num">${String(k).padStart(2,"0")}</span><h3>${esc(a.t)}</h3><p>${esc(a.s)} · ${rs.length} repertórios</p></div><div class="grid">${rs.map(card).join("")}</div></section>`});
 document.getElementById("out").innerHTML=html;document.getElementById("empty").hidden=tot>0;
 const filt=q||S.tf||S.pf||S.hide;document.getElementById("count").textContent=filt?`${tot} encontrados`:`${ALL.size} repertórios`;prog()}
-document.getElementById("navs").innerHTML=`<a href="#testar">Testar encaixe</a><a href="#enc">Encaminhamentos</a>`+AX.map(a=>`<a href="#${a.id}">${esc(a.t.split(",")[0])}</a>`).join("")+`<a href="#modelos">Modelos</a>`;
+document.getElementById("navs").innerHTML=`<a href="#testar">Testar encaixe</a><a href="#tese">Montar tese</a><a href="#perguntas">5 perguntas</a><a href="#enc">Encaminhamentos</a>`+AX.map(a=>`<a href="#${a.id}">${esc(a.t.split(",")[0])}</a>`).join("")+`<a href="#modelos">Modelos</a>`;
 const ft=document.getElementById("ftype"),fp=document.getElementById("fpos"),fs=document.getElementById("fshow"),fc=document.getElementById("fclear"),rv=document.getElementById("trev");
 ft.innerHTML=TYPES.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join("");
 fp.innerHTML=POS.map((t,i)=>`<option value="${i}">${t[0]}</option>`).join("");
@@ -975,6 +1023,130 @@ const bot=document.createElement("div");bot.className="msg bot";bot.innerHTML=SA
 if(SAMPLE){const btn=rf.querySelector("button");btn.disabled=true;const ok=await claudeDebate(arg,tctx,bot.querySelector(".aiout"));if(!ok)bot.insertAdjacentHTML("afterbegin",evalArg(arg,tctx));btn.disabled=false}});
 ra.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();rf.requestSubmit()}});
 
+})();
+
+(function(){
+const ENCK={"falha estatal":{s:"a omissão do poder público",c:"a omissão do poder público, que não garante políticas eficazes para {T}",k:["a violação de direitos básicos de {Q}","a perpetuação da desigualdade no acesso a serviços públicos"],i:"a falta de investimento e de fiscalização contínua das políticas que já existem"},
+"falta de empatia":{s:"a indiferença social",c:"a indiferença social diante da realidade de {Q}",k:["a naturalização do problema","o isolamento e a invisibilidade de {Q}"],i:"a normalização da situação, que faz o problema parecer natural"},
+"falta de informação":{s:"a desinformação da população",c:"a desinformação da população sobre {T}",k:["escolhas que prejudicam a saúde e a segurança","a vulnerabilidade a golpes e notícias falsas"],i:"a ausência de campanhas acessíveis e contínuas"},
+"lacuna educacional":{s:"a falta de debate sobre a questão nas escolas",c:"a ausência de debate sobre {T} nas escolas",k:["a formação de cidadãos pouco críticos","a reprodução do problema entre gerações"],i:"currículos rígidos e a falta de formação de professores para abordar o tema"},
+"negligência familiar":{s:"a negligência familiar",c:"a omissão de muitas famílias no acompanhamento de crianças e jovens",k:["a exposição precoce a riscos","prejuízos emocionais e no desenvolvimento"],i:"rotinas sobrecarregadas e a falta de orientação às famílias"},
+"manipulação midiática":{s:"a manipulação exercida pelas plataformas digitais",c:"a ação de plataformas e veículos que distorcem o debate sobre {T}",k:["a polarização e a desinformação","decisões tomadas a partir de informações distorcidas"],i:"a falta de regulação das plataformas e a baixa educação midiática"},
+"influência midiática":{s:"a influência das mídias",c:"a influência das mídias e das redes, que reforçam padrões nocivos ligados a {T}",k:["a reprodução de comportamentos nocivos","a ansiedade e a comparação constante"],i:"o lucro que esses conteúdos geram, o que desestimula mudanças"},
+"preconceito":{s:"o preconceito contra {Q}",c:"o preconceito enraizado contra {Q}",k:["a exclusão social e do mercado de trabalho","a violência e a violação da dignidade de {Q}"],i:"a reprodução cultural do preconceito, muitas vezes disfarçado de opinião"},
+"desigualdade":{s:"a desigualdade socioeconômica",c:"a desigualdade socioeconômica, que deixa {Q} mais vulneráveis",k:["o acesso desigual a direitos","um ciclo de pobreza que passa de geração em geração"],i:"a concentração de renda e a distribuição desigual dos serviços públicos"},
+"lógica capitalista":{s:"a lógica de mercado",c:"a lógica de mercado, que coloca o lucro acima do bem-estar de {Q}",k:["a precarização e a exploração","o consumo excessivo e os danos ambientais"],i:"os interesses econômicos de quem lucra com o problema"},
+"herança histórica e cultural":{s:"a herança histórica de exclusão",c:"a herança histórica de exclusão que ainda atinge {Q}",k:["a permanência de desigualdades antigas","a naturalização da exclusão"],i:"a falta de políticas de reparação e de memória"}};
+const AFF={"ia":["trabalhadores ameaçados pela automação e estudantes sem formação digital","o trabalho e a educação"],"redes sociais":["crianças e adolescentes, mais expostos aos efeitos das redes","a saúde mental e a informação de qualidade"],"telas":["crianças pequenas, em plena fase de desenvolvimento","o desenvolvimento saudável"],"fake news":["pessoas com menos acesso a fontes confiáveis, como muitos idosos","a informação de qualidade"],"saude mental":["jovens e trabalhadores sobrecarregados","a saúde"],"saude":["a população que depende exclusivamente do SUS","a saúde"],"vacina":["crianças não vacinadas e grupos de risco","a saúde"],"corpo":["mulheres e adolescentes, mais pressionados pelos padrões","a saúde e a autoestima"],"idoso":["pessoas idosas, sobretudo as de baixa renda","a dignidade e a convivência social"],"mulher":["mulheres, sobretudo negras e periféricas","a segurança e a igualdade"],"racismo":["a população negra","a igualdade e a dignidade"],"indigena":["os povos indígenas","o território e a cultura"],"meio ambiente":["populações que dependem dos recursos naturais e moradores de áreas de risco","um meio ambiente equilibrado"],"lixo":["catadores e moradores próximos a lixões","a saúde e um ambiente limpo"],"agua":["moradores de periferias e do semiárido","o saneamento básico"],"educacao":["estudantes de escolas públicas","uma educação de qualidade"],"leitura":["jovens de baixa renda, com pouco acesso a livros","a educação e a cultura"],"trabalho":["trabalhadores informais e de aplicativos","um trabalho digno"],"fome":["famílias de baixa renda","a alimentação adequada"],"desigualdade":["a população de baixa renda","a igualdade de oportunidades"],"moradia":["pessoas em situação de rua e moradores de áreas irregulares","a moradia digna"],"deficiencia":["pessoas com deficiência","a acessibilidade e a inclusão"],"cultura":["moradores de periferias e do interior","a cultura e o lazer"],"ciencia":["a população que depende de decisões baseadas em ciência","a informação e a saúde"],"democracia":["cidadãos pouco representados nos espaços de decisão","a participação política"],"consumo":["jovens e famílias endividadas","o consumo consciente"],"apostas":["jovens e famílias de baixa renda","a segurança financeira"],"crianca":["crianças e adolescentes","a proteção integral"],"familia":["crianças e adolescentes","a convivência familiar saudável"],"drogas":["jovens e pessoas em vulnerabilidade social","a saúde"],"violencia":["jovens negros das periferias","a vida e a segurança"],"preconceito":["os grupos discriminados","a dignidade e a igualdade"],"privacidade":["usuários da internet, sobretudo crianças","a privacidade"],"mobilidade":["moradores de periferias","a mobilidade e o acesso à cidade"],"imigrantes":["imigrantes e refugiados","o acolhimento e a dignidade"],"ribeirinhos":["comunidades ribeirinhas e tradicionais","o território, a saúde e a educação"],"lgbt":["pessoas LGBTQIA+","a dignidade e a segurança"],"solidao":["idosos e jovens isolados","o convívio social"]};
+function themeKey(raw){const t=raw.trim();const qn=norm(t);const words=qn.split(/[^a-z0-9]+/).filter(w=>w&&!STOP.has(w));let k=null;
+for(const g of GROUPS){const gk=norm(g[0]);if(AFF[gk]&&g.some(term=>{const tn=norm(term);return tn.includes(" ")?qn.includes(tn):words.includes(tn)})){k=gk;break}}
+if(!k)for(const g of GROUPS){const gk=norm(g[0]);if(AFF[gk]&&g.some(term=>{const tn=norm(term);return !tn.includes(" ")&&words.some(w=>w.length>=4&&tn.length>=4&&tn.startsWith(stem(w)))})){k=gk;break}}return k}
+const plainD=d=>{const parts=d.split(/,\s*|\s+e\s+/).map(x=>x.replace(/^(o|a|os|as)\s+/i,""));return parts.length>1?parts.slice(0,-1).join(", ")+" e "+parts[parts.length-1]:parts[0]};
+function ctxOf(raw){const k=themeKey(raw);const a=k?AFF[k]:["os grupos mais vulneráveis afetados por esse problema","os direitos básicos"];return {T:themePhrase(raw),Q:a[0],D:plainD(a[1])}}
+const fill=(s,c)=>contract(s.replace(/\{T\}/g,c.T).replace(/\{Q\}/g,c.Q));
+function encRank(raw){const keep={tf:S.tf,pf:S.pf,hide:S.hide};S.tf=null;S.pf=null;S.hide=false;let res;try{res=search(raw)}finally{Object.assign(S,keep)}
+const sc={};ENC.forEach(e=>sc[e.t]=0);res.list.forEach(x=>x.ctx.forEach(c=>{if(c.startsWith("Encaminhamento: ")){const t=c.slice(16);if(t in sc)sc[t]+=x.sc}}));
+const base=["Falha estatal","Lacuna educacional","Desigualdade","Falta de informação","Preconceito"];base.forEach((t,i)=>{if(t in sc)sc[t]+=.5-i*.08});
+return ENC.slice().sort((a,b)=>sc[b.t]-sc[a.t])}
+function encKey(t){return norm(t)in ENCK?norm(t):t.toLowerCase()}
+const K=t=>ENCK[t.toLowerCase()];
+const ENCRX=[["Falha estatal",/estado|governo|poder publico|politica|lei|omiss|fiscaliz|investimento|sus|servico/],["Lacuna educacional",/escola|educa|ensino|professor|curricul|aula/],["Falta de informação",/informa|desinforma|conhecimento|sabem|campanha|fake|noticia/],["Negligência familiar",/famil|pais|responsave/],["Manipulação midiática",/manipul|algoritm|plataforma|big tech|distorc/],["Influência midiática",/midia|redes|influenc|internet|tv|propaganda|publicidade/],["Preconceito",/preconceit|racis|discrimin|estigma|machis|xenof|homof|capacit|etaris|odio/],["Desigualdade",/desigual|pobre|pobreza|renda|periferi|acesso/],["Lógica capitalista",/lucro|mercado|capital|consum|empresa|econom/],["Falta de empatia",/empatia|indiferen|egois|individual|ignor|invisib/],["Herança histórica e cultural",/histor|escrav|colon|heranca|cultura|tradic|patriarc/]];
+function classify(text){const n=norm(text);const hits=ENCRX.filter(([t,re])=>re.test(n)).map(x=>x[0]);return hits.length?hits:[]}
+/* ---------- tabs ---------- */
+const tabs=[["tab-test","pTest","testar"],["tab-tese","pTese","tese"],["tab-5","p5","perguntas"]];
+function openTab(id,scroll){tabs.forEach(([b,p])=>{const on=b===id;document.getElementById(b).setAttribute("aria-selected",on);document.getElementById(p).hidden=!on});if(scroll)document.getElementById("testar").scrollIntoView({behavior:"smooth",block:"start"})}
+tabs.forEach(([b])=>document.getElementById(b).addEventListener("click",()=>openTab(b)));
+function fromHash(){const h=location.hash.slice(1);const t=tabs.find(x=>x[2]===h);if(t)openTab(t[0],true)}
+window.addEventListener("hashchange",fromHash);fromHash();
+/* ---------- Montar tese ---------- */
+const seout=document.getElementById("seout"),setema=document.getElementById("setema");
+let st=null;
+function buildTese(){if(!st)return;const c=st.c;const box=seout.querySelector("#sethesis");if(!box)return;
+const sel=st.items.filter(x=>x.on);const own=st.own.filter(x=>x.on);const causes=[...sel.map(x=>x.short),...own.map(x=>x.text)];
+let html="";
+if(st.mode==="cc"){if(causes.length<2){html=`<p class="mnote">Marca ${2-causes.length===2?"2 causas":"mais 1 causa"} pra montar a tese.</p>`}
+else{const [a,b]=causes;html=`<p class="tese">Nesse cenário, ${esc(c.T)} ainda é um desafio no Brasil, principalmente por causa de ${esc(a)} e de ${esc(b)}.</p>`.replace(/de (a|o|as|os) /g,(m,x)=>({a:"da ",o:"do ",as:"das ",os:"dos "})[x]);
+html+=`<p class="mnote"><b>D1:</b> ${esc(a)} · <b>D2:</b> ${esc(b)}</p>`;if(causes.length>2)html+=`<p class="mnote">Você marcou ${causes.length}. Usei as 2 primeiras.</p>`}}
+else{if(!causes.length){html=`<p class="mnote">Marca 1 causa e escolhe a consequência.</p>`}else{const a=causes[0];const k=st.cons||"";if(!k){html=`<p class="mnote">Agora escolhe a consequência logo acima.</p>`}else{html=`<p class="tese">${esc(contract("Esse problema persiste, sobretudo, devido a "+a+", o que gera "+k+"."))}</p><p class="mnote"><b>D1 (causa):</b> ${esc(a)} · <b>D2 (consequência):</b> ${esc(k)}</p>`}}}
+const reps=[];sel.forEach(x=>{const e=ENC.find(y=>y.t===x.enc);if(e)reps.push(...e.r.slice(0,2).map(r=>r[0]))});
+if(reps.length)html+=`<p class="mnote"><b>Repertórios pras causas marcadas:</b></p><div class="alts">${reps.slice(0,6).map(n=>`<button type="button" class="alt" data-go="${esc(n)}">${esc(n)}</button>`).join("")}</div>`;
+box.innerHTML=html}
+function renderTese(){const c=st.c;
+const consOpts=[];st.items.filter(x=>x.on).forEach(x=>K(x.enc).k.forEach(k=>consOpts.push(fill(k,c))));
+const uniqCons=[...new Set(consOpts)];
+seout.innerHTML=`<div class="msg bot wide"><p><b>Tema:</b> ${esc(c.T)}</p><p><b>Quem mais sofre:</b> ${esc(c.Q)}. <b>Direitos em jogo:</b> ${esc(c.D)}.</p><p class="mnote">Os problemas abaixo estão em ordem do que mais combina com o tema, pelo caderno. Marca os que fazem sentido pra você.</p></div>
+<div class="causes">${st.items.map((x,i)=>`<label class="cause${x.on?" on":""}"><input type="checkbox" data-i="${i}"${x.on?" checked":""}><span><b>${esc(x.enc)}</b>${esc(x.cause.charAt(0).toUpperCase()+x.cause.slice(1))}.</span></label>`).join("")}${st.own.map((x,i)=>`<label class="cause own${x.on?" on":""}"><input type="checkbox" data-o="${i}"${x.on?" checked":""}><span><b>Sua causa${x.enc.length?" · "+esc(x.enc.join(" / ").toLowerCase()):""}</b>${esc(x.text)}</span></label>`).join("")}</div>
+<div class="mode"><span class="flbl">Tipo de tese</span><button type="button" class="alt${st.mode==="cc"?" on":""}" data-mode="cc">2 causas</button><button type="button" class="alt${st.mode==="ck"?" on":""}" data-mode="ck">Causa + consequência</button></div>
+${st.mode==="ck"?`<div class="mode"><span class="flbl">Consequência</span>${uniqCons.length?uniqCons.map(k=>`<button type="button" class="alt${st.cons===k?" on":""}" data-cons="${esc(k)}">${esc(k)}</button>`).join(""):'<span class="mnote">Marca uma causa primeiro.</span>'}</div>`:""}
+<div class="thesisbox"><span class="flbl">Sua tese</span><div id="sethesis"></div></div>
+<div class="discuss"><span class="flbl">Discutir</span><div id="selog" class="t-log"></div><form id="sedform" class="t-reply"><label class="tfield"><span>Quer propor outra causa ou perguntar algo sobre o tema?</span><textarea id="sedmsg" rows="2" placeholder="Ex.: E se a causa for a falta de escolas perto das comunidades?"></textarea></label><button type="submit" class="fbtn aibtn">Enviar</button></form></div>`;
+buildTese();if(st.log.length)document.getElementById("selog").innerHTML=st.log.join("")}
+function analyze(raw){raw=raw.trim();if(!raw){setema.focus();return}const c=ctxOf(raw);const ranked=encRank(raw).slice(0,6);
+st={raw,c,items:ranked.map((e,i)=>({enc:e.t,cause:fill(K(e.t).c,c),short:fill(K(e.t).s,c),on:i<2})),own:[],mode:"cc",cons:"",log:[],turns:[]};renderTese();seout.scrollIntoView({behavior:"smooth",block:"start"})}
+document.getElementById("seform").addEventListener("submit",e=>{e.preventDefault();analyze(setema.value)});
+setema.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();analyze(setema.value)}});
+document.getElementById("seex").addEventListener("click",()=>{setema.value="Desafios para a valorização dos povos ribeirinhos no Brasil";analyze(setema.value)});
+function tRegs(theme){const qn=norm(theme);const toks=[...new Set(qn.split(/[^a-z0-9]+/).filter(t=>t&&!STOP.has(t)))];const regs=toks.filter(t=>t.length>=3).map(rxTok);GROUPS.forEach(g=>{const hit=g.some(term=>{const tn=norm(term);return tn.includes(" ")?qn.includes(tn):toks.includes(tn)||toks.some(t=>t.length>=4&&tn.length>=4&&tn.startsWith(stem(t)))});if(hit)g.forEach(term=>regs.push(rxTerm(norm(term))))});return regs}
+function offlineReply(msg){const c=st.c;const enc=classify(msg);const regs=tRegs(st.raw);const onTheme=regs.some(re=>re.test(norm(msg)));
+const isQ=/\?\s*$/.test(msg.trim())&&!/^(e se|e que tal|pode ser)/i.test(norm(msg));
+let out="";
+if(enc.length){out+=`<p>Isso é um argumento de <b>${esc(enc.slice(0,2).join(" ou ").toLowerCase())}</b>.</p>`}else out+=`<p>Não consegui encaixar isso num encaminhamento conhecido. Tenta dizer quem é o responsável (Estado, escola, família, mídia, sociedade) ou qual é o mecanismo.</p>`;
+out+=onTheme?`<p>Tá ligado ao tema, ótimo. Agora pensa: o que isso causa pra ${esc(c.Q)}?</p>`:`<p>Deixa mais específico pro tema, usando as palavras dele. Assim fica claro que não é um argumento genérico.</p>`;
+const e=enc.length?ENC.find(x=>x.t===enc[0]):null;if(e)out+=`<p class="mnote"><b>Repertórios que combinam:</b></p><div class="alts">${e.r.slice(0,3).map(r=>`<button type="button" class="alt" data-go="${esc(r[0])}">${esc(r[0])}</button>`).join("")}</div>`;
+if(!isQ)out+=`<p><button type="button" class="alt" data-add="${esc(msg)}">+ Usar como causa na tese</button></p>`;
+return out}
+async function claudeTese(msg,box){const c=st.c;const sel=[...st.items.filter(x=>x.on).map(x=>x.cause),...st.own.filter(x=>x.on).map(x=>x.text)];
+const rules=`Você é professor de redação do ENEM e está ajudando um aluno do ensino médio a montar a tese, em português do Brasil, tom direto e informal.
+Tema: "${st.raw}"
+Causas que o aluno marcou até agora: ${sel.length?sel.join("; "):"nenhuma"}.
+Encaminhamentos possíveis: ${ENC.map(e=>e.t).join(", ")}.
+Discuta com ele os problemas desse tema: diga se a ideia dele é uma causa ou uma consequência, se é específica o suficiente pro tema e qual encaminhamento ela representa. Seja honesto: não concorde só pra agradar, e não invente dados, números ou leis. Quando ajudar, sugira uma forma melhor de escrever a causa. Responda em até 6 frases curtas, sem markdown.
+
+Mensagem do aluno: ${msg}`;
+if(!st.turns.length)st.turns.push({role:"user",content:rules});else st.turns.push({role:"user",content:msg});
+try{const {text}=await SAMPLE(st.turns,{cache:false,modelTier:"quick",onText:({text})=>{box.innerHTML=`<p class="mnote"><b>✦ Claude</b></p>`+text.split(/\n+/).filter(l=>l.trim()).map(l=>`<p>${esc(l)}</p>`).join("")}});st.turns.push({role:"assistant",content:text});return true}
+catch(e){st.turns.pop();const m=aiErr(e);box.innerHTML=m?`<p class="mnote err">${esc(m)}</p>`:"";return false}}
+seout.addEventListener("change",e=>{const cb=e.target.closest("input[type=checkbox]");if(!cb||!st)return;if(cb.dataset.i!=null)st.items[+cb.dataset.i].on=cb.checked;else st.own[+cb.dataset.o].on=cb.checked;cb.closest(".cause").classList.toggle("on",cb.checked);
+if(st.mode==="ck"){renderTese()}else buildTese()});
+seout.addEventListener("click",e=>{const m=e.target.closest("[data-mode]");if(m){st.mode=m.dataset.mode;st.cons="";renderTese();return}
+const k=e.target.closest("[data-cons]");if(k){st.cons=k.dataset.cons;renderTese();return}
+const a=e.target.closest("[data-add]");if(a){const t=a.dataset.add.replace(/^(e se |e que tal |pode ser |acho que |a causa (é|e|seria) )/i,"").replace(/\?$/,"").trim();st.own.push({text:t.charAt(0).toLowerCase()+t.slice(1),enc:classify(t),on:true});st.log=[...document.getElementById("selog").children].map(x=>x.outerHTML);renderTese();return}
+const g=e.target.closest("[data-go]");if(g){const q=document.getElementById("q");q.value=g.dataset.go.split(" — ")[0];q.dispatchEvent(new Event("input"));setTimeout(()=>document.getElementById("out").scrollIntoView({behavior:"smooth"}),250)}});
+seout.addEventListener("submit",async e=>{if(e.target.id!=="sedform")return;e.preventDefault();const ta=document.getElementById("sedmsg");const msg=ta.value.trim();if(!msg)return;const lg=document.getElementById("selog");
+const me=document.createElement("div");me.className="msg me";me.innerHTML=`<p>${esc(msg)}</p>`;lg.appendChild(me);const bot=document.createElement("div");bot.className="msg bot";lg.appendChild(bot);ta.value="";
+if(SAMPLE){bot.innerHTML='<p class="mnote">O Claude tá pensando…</p>';const ok=await claudeTese(msg,bot);const add=`<p><button type="button" class="alt" data-add="${esc(msg)}">+ Usar como causa na tese</button></p>`;if(ok)bot.insertAdjacentHTML("beforeend",add);else bot.insertAdjacentHTML("afterbegin",offlineReply(msg))}else bot.innerHTML=offlineReply(msg);
+st.log=[...lg.children].map(x=>x.outerHTML)});
+seout.addEventListener("keydown",e=>{if(e.target.id==="sedmsg"&&e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("sedform").requestSubmit()}});
+/* ---------- 5 perguntas ---------- */
+const qout=document.getElementById("qout"),qtema=document.getElementById("qtema"),qarg=document.getElementById("qarg");
+const QS=[["Por que isso é um problema?","vira o tópico frasal"],["Quais são as causas?","vira a causa e a minijustificativa"],["Quem sofre com isso?","vira o exemplo ou o aposto"],["Quais são as consequências?","vira a consequência e a consequência da consequência"],["O que impede a solução?","vai pro fechamento ou pro D2"]];
+function show5(ans,src){qout.innerHTML=`<div class="qa">${QS.map(([q,w],i)=>`<div class="qitem"><p class="qq"><span class="qn">${i+1}</span>${esc(q)}</p><p>${esc(ans[i]||"")}</p><p class="mnote">${esc(w)}</p></div>`).join("")}</div><p class="mnote">${src}</p>${SAMPLE&&src.indexOf("Claude")<0?'<button type="button" class="aimore" id="q5ai">✦ Gerar com o Claude</button>':""}`}
+function offline5(raw,arg){const c=ctxOf(raw);let a=arg.trim().replace(/\.$/,"");a=a.charAt(0).toLowerCase()+a.slice(1);
+const enc=classify(a);const e1=enc[0]||encRank(raw)[0].t;const rk=encRank(raw).map(e=>e.t).filter(t=>t!==e1&&!enc.includes(t));const e2=rk[0];
+const k1=K(e1),k2=K(e2);
+const cap=s=>{s=contract(s);return s.charAt(0).toUpperCase()+s.slice(1)};
+return [cap(`porque direitos como ${c.D} deixam de ser garantidos a ${c.Q}, o que fere a dignidade e a cidadania previstas na Constituição.`),
+cap(`${a}, somado a ${fill(k2.s,c)}.`),
+cap(`${c.Q}.`),
+cap(`${fill(k1.k[0],c)} e ${fill(k1.k[1],c)}, o que aprofunda o problema com o tempo.`),
+cap(`${k1.i}, além de ${k2.i}.`)]}
+function run5(){const raw=qtema.value.trim(),arg=qarg.value.trim();if(!raw){qtema.focus();return}if(!arg){qarg.focus();return}
+show5(offline5(raw,arg),"Rascunho montado pelo caderno a partir do tema e do argumento. Ajusta com as suas palavras e com exemplos reais antes de usar.");qout.scrollIntoView({behavior:"smooth",block:"start"})}
+document.getElementById("qform").addEventListener("submit",e=>{e.preventDefault();run5()});
+[qtema,qarg].forEach(t=>t.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();run5()}}));
+document.getElementById("qex").addEventListener("click",()=>{qtema.value="Desafios para a valorização dos povos ribeirinhos no Brasil";qarg.value="a omissão do poder público";run5()});
+qout.addEventListener("click",async e=>{const b=e.target.closest("#q5ai");if(!b||!SAMPLE)return;b.disabled=true;b.textContent="✦ Pensando…";
+const raw=qtema.value.trim(),arg=qarg.value.trim();
+const prompt=`Você é professor de redação do ENEM. Um aluno vai escrever sobre o tema "${raw}" e um dos argumentos da tese dele é: "${arg}".
+Responda as 5 perguntas abaixo sobre ESSE argumento nesse tema, em português do Brasil, em norma culta mas simples, com 1 ou 2 frases cada, específicas pro tema. Não invente dados, números, leis ou citações.
+1. Por que isso é um problema?
+2. Quais são as suas causas?
+3. Quem sofre com isso?
+4. Quais são as suas consequências?
+5. O que impede a sua resolução?
+Responda só com JSON: {"respostas":["resposta 1","resposta 2","resposta 3","resposta 4","resposta 5"]}`;
+try{const d=await SAMPLE.json(prompt,{modelTier:"quick"});const r=d&&Array.isArray(d.respostas)?d.respostas.map(String):null;if(!r||r.length<5)throw {code:"bad"};show5(r,"✦ Respostas do Claude. Confere se fazem sentido e ajusta com as suas palavras.")}
+catch(err){const m=aiErr(err);b.disabled=false;b.textContent="✦ Gerar com o Claude";if(m)b.insertAdjacentHTML("afterend",`<p class="mnote err">${esc(m)}</p>`)}});
 })();
 
 render();
