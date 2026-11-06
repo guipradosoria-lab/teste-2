@@ -210,6 +210,11 @@ h2.sec.t-h{margin:4px 0 6px}
 .aiout:empty{display:none}
 .aiout{display:grid;gap:6px;border-top:1px dashed var(--rule);padding-top:8px}
 @media (max-width:640px){.t-form{grid-template-columns:1fr}.tester{padding:16px}}
+.t-reply{display:grid;gap:8px;background:var(--paper);border:1.5px dashed var(--pen);padding:12px;border-radius:8px}
+.t-reply .aibtn{justify-self:start}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px}
+.checks li.ok{color:var(--pen)}
+.checks li.no{color:var(--ink)}
 </style>
 
 <div class="wrap">
@@ -259,6 +264,7 @@ h2.sec.t-h{margin:4px 0 6px}
 <section class="tester" id="testar" aria-label="Testar encaixe">
   <div class="t-head"><span class="eyebrow">Testar encaixe</span><h2 class="sec t-h">O repertório combina com o tema?</h2><p>Escreve o tema, escolhe o repertório e vê se os dois encaixam, onde usar e como amarrar.</p></div>
   <div class="t-log" id="tlog" aria-live="polite"></div>
+  <form class="t-reply" id="treply" hidden><label class="tfield"><span id="rlabel">Discorda do veredito? Explica por que você acha que encaixa.</span><textarea id="rarg" rows="3" placeholder="Ex.: Acho que encaixa porque…"></textarea></label><button type="submit" class="fbtn aibtn">Enviar argumento</button></form>
   <form class="t-form" id="tform">
     <label class="tfield"><span>Tema da redação</span><textarea id="ttema" rows="2" placeholder="Ex.: Desafios para a valorização dos povos ribeirinhos no Brasil"></textarea></label>
     <label class="tfield"><span>Repertório</span><input id="trep" list="treplist" placeholder="Começa a digitar: Bauman, Torto Arado, CF…" autocomplete="off"><datalist id="treplist"></datalist></label>
@@ -856,7 +862,7 @@ document.querySelectorAll(".sug").forEach(b=>b.addEventListener("click",()=>{con
 const log=document.getElementById("tlog"),form=document.getElementById("tform"),tt=document.getElementById("ttema"),tr=document.getElementById("trep"),tc=document.getElementById("tclear");
 document.getElementById("treplist").innerHTML=UNI.map(u=>`<option value="${esc(u.r[0])}"></option>`).join("");
 let lastTheme="";
-function welcome(){log.innerHTML=`<div class="msg bot"><p>Me manda o tema da redação e o repertório que você quer usar. Eu digo se encaixa, onde entra e como amarrar.</p><p><button type="button" class="alt" id="texample">Ver um exemplo</button></p></div>`}
+function welcome(){log.innerHTML=`<div class="msg bot"><p>Me manda o tema da redação e o repertório que você quer usar. Eu digo se encaixa, onde entra e como amarrar. Se discordar, é só defender o seu ponto que eu digo se o argumento convence.</p><p><button type="button" class="alt" id="texample">Ver um exemplo</button></p></div>`}
 welcome();
 function findRep(v){const n=norm(v).trim();if(!n)return null;let u=UNI.find(x=>norm(x.r[0])===n)||UNI.find(x=>norm(x.r[0]).startsWith(n))||(n.length>=4?UNI.find(x=>norm(x.r[0]).includes(n)):null);if(u)return u;
 const toks=n.split(/[^a-z0-9]+/).filter(t=>t.length>=4);if(!toks.length)return null;let best=null,bs=0;UNI.forEach(x=>{const ws=norm(x.r[0]).split(/[^a-z0-9]+/);const c=toks.filter(t=>ws.some(w=>w.startsWith(t))).length;if(c>bs){bs=c;best=x}});return bs>=Math.ceil(toks.length/2)?best:null}
@@ -873,7 +879,7 @@ else{const k=rank(theme,u.r[0]);const V={"forte":["✓ Encaixa bem","v-forte"],"
 const posTxt=k.pos>=0?`Pelo caderno, é o ${k.pos+1}º repertório que mais combina com esse tema (de ${k.n}).`:"Pelo caderno, esse repertório não tem ligação direta com as palavras do tema.";
 bot.innerHTML=`<p class="verdict ${V[1]}">${V[0]}</p><p class="mnote">${posTxt}</p>${offlineHow(u.r,u.ctx,theme,k.lvl)}${k.lvl!=="forte"&&k.alts.length?`<p class="mnote"><b>Encaixam melhor nesse tema:</b></p>${altBtns(k.alts)}`:""}<button type="button" class="aimore ai-only tai">✦ Pedir a opinião do Claude</button><div class="aiout"></div>`;
 bot.dataset.theme=theme;bot.dataset.rep=u.r[0]}
-log.appendChild(bot);tc.hidden=false;me.scrollIntoView({behavior:"smooth",block:"start"})}
+log.appendChild(bot);tc.hidden=false;setCtx(u?{theme,u,lvl:rank(theme,u.r[0]).lvl,turns:[]}:null);me.scrollIntoView({behavior:"smooth",block:"start"})}
 async function aiCompat(btn){const bot=btn.closest(".msg");const u=UNI[UMAP.get(bot.dataset.rep)];const theme=bot.dataset.theme;if(!SAMPLE||!u)return;const box=bot.querySelector(".aiout");btn.disabled=true;box.innerHTML='<p class="mnote">Pensando…</p>';const r=u.r;
 const prompt=`Você é professor de redação do ENEM e fala com um aluno do ensino médio, em português do Brasil, com tom direto e informal.
 Tema da redação: "${theme}"
@@ -894,7 +900,48 @@ tt.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefa
 log.addEventListener("click",e=>{const a=e.target.closest(".alt[data-rep]");if(a){tr.value=a.dataset.rep;test(lastTheme||tt.value,a.dataset.rep);return}
 if(e.target.closest("#texample")){tt.value="Desafios para a valorização dos povos ribeirinhos no Brasil";tr.value="Chico Mendes";test(tt.value,tr.value);return}
 const b=e.target.closest(".tai");if(b)aiCompat(b)});
-tc.addEventListener("click",()=>{welcome();tc.hidden=true;lastTheme=""});
+tc.addEventListener("click",()=>{welcome();tc.hidden=true;lastTheme="";setCtx(null)});
+let tctx=null;
+const rf=document.getElementById("treply"),ra=document.getElementById("rarg"),rl=document.getElementById("rlabel");
+function setCtx(c){tctx=c;rf.hidden=!c;if(c){rl.textContent=c.lvl==="forte"?"Concorda? Explica com as suas palavras por que encaixa, e eu confiro se você entendeu a ligação.":"Discorda do veredito? Explica por que você acha que encaixa, e eu digo se o seu argumento convence.";ra.value=""}}
+function themeRegs(theme){const qn=norm(theme);const toks=[...new Set(qn.split(/[^a-z0-9]+/).filter(t=>t&&!STOP.has(t)))];const regs=toks.filter(t=>t.length>=3).map(rxTok);
+GROUPS.forEach(g=>{const hit=g.some(term=>{const tn=norm(term);return tn.includes(" ")?qn.includes(tn):toks.includes(tn)||toks.some(t=>t.length>=4&&tn.length>=4&&tn.startsWith(stem(t)))});if(hit)g.forEach(term=>regs.push(rxTerm(norm(term))))});return regs}
+const COMMON=new Set("quando sobre entre pessoas sociedade mostra forma outro outra todos todas mesmo ainda seria sendo porque fazer pode podem tambem muito muitas muitos depois antes cada essa esse isso aquele aquela".split(" "));
+function repRegs(r){const name=norm(r[0]).split(/[^a-z0-9]+/).filter(w=>w.length>=4&&!STOP.has(w)&&!COMMON.has(w));const idea=[...new Set(norm(r[3]+" "+r[4]).split(/[^a-z0-9]+/).filter(w=>w.length>=6&&!COMMON.has(w)))].slice(0,14);return {name:name.map(rxTok),idea:idea.map(rxTok)}}
+function evalArg(arg,c){const a=norm(arg);const words=a.split(/\s+/).filter(Boolean).length;const rr=repRegs(c.u.r);
+const c1=rr.name.some(re=>re.test(a))||rr.idea.filter(re=>re.test(a)).length>=2;
+const c2=themeRegs(c.theme).some(re=>re.test(a));
+const c3=/(^|[^a-z])(porque|pois|ja que|visto que|uma vez que|pq|logo|por isso|assim|entao|isso mostra|isso explica|ou seja|dessa forma|consequentemente|por causa|faz com que|leva a|gera|causa|explica)([^a-z]|$)/.test(a);
+const c4=/(^|[^a-z])(brasil|brasileir[a-z]*|por exemplo|exemplo|tipo|caso|hoje|atualmente|pais|cidade|cidades|escola|escolas|familia|familias|governo|comunidade|comunidades|jovens|populacao|[0-9]+)([^a-z]|$)/.test(a);
+const c5=words>=20;const sc=[c1,c2,c3,c4,c5].filter(Boolean).length;
+const up={fraco:"médio","médio":"forte",forte:"forte"}[c.lvl];
+let head,body;
+if(c1&&c2&&c3&&sc>=4){head=c.lvl==="forte"?"✓ Isso mesmo":"✓ Você convenceu";body=c.lvl==="forte"?"Sua explicação mostra que você entendeu a ligação. É só levar isso pro parágrafo do jeito que você escreveu.":`Com essa ligação, o encaixe sobe pra <b>${up}</b>. Dá pra usar, desde que essa ponte apareça escrita no parágrafo. Se ela ficar só na sua cabeça, o corretor não vê.`}
+else if(sc>=2){head="~ Faz sentido em parte";body="A ideia tem caminho, mas ainda falta coisa pra convencer o corretor:"}
+else{head="✗ Ainda não convence";body="Do jeito que tá, parece repertório encaixado na marra. Tenta de novo acrescentando:"}
+const items=[[c1,"Fala do repertório de verdade: cita o autor ou a obra e a ideia central dele."],[c2,"Liga ao tema com as palavras do próprio tema, senão vira repertório de bolso."],[c3,"Explica o porquê: \"porque\", \"já que\", \"isso mostra que\"… mostrando como a ideia do repertório explica o problema."],[c4,"Traz pro Brasil: um exemplo concreto, um grupo afetado ou uma situação real."],[c5,"Desenvolve um pouco mais: 2 ou 3 frases."]];
+const list=`<ul class="checks">${items.map(([ok,t])=>`<li class="${ok?"ok":"no"}">${ok?"✓":"✗"} ${esc(t)}</li>`).join("")}</ul>`;
+return `<p class="verdict ${head[0]==="✓"?"v-forte":head[0]==="~"?"v-medio":"v-fraco"}">${head}</p><p>${body}</p>${list}<p class="mnote">Essa conferência olha se o seu argumento tem as peças de uma boa ligação. Ela não entende o conteúdo como uma pessoa, então usa como checklist, não como nota final.</p>`}
+async function claudeDebate(arg,c,box){const r=c.u.r;
+const rules=`Você é professor de redação do ENEM conversando com um aluno do ensino médio, em português do Brasil, com tom direto e informal.
+Tema da redação: "${c.theme}"
+Repertório: ${r[0]} (${r[1]})
+O que ele diz: ${r[3]}
+Como costuma ser usado: ${r[4]}
+A avaliação automática da página deu encaixe ${c.lvl}.
+O aluno vai defender a opinião dele sobre o encaixe. Avalie o argumento com honestidade: se ele estiver certo, diga que está e por quê, e mostre em uma frase como escrever essa ligação na redação; se estiver errado ou fraco, explique o que falta, sem rodeios, e diga como melhorar. Não concorde só pra agradar. Não invente dados, datas ou citações. Responda em até 6 frases curtas, sem markdown.
+
+Argumento do aluno: ${arg}`;
+if(!c.turns.length)c.turns.push({role:"user",content:rules});else c.turns.push({role:"user",content:arg});
+box.innerHTML='<p class="mnote">O Claude tá lendo o seu argumento…</p>';
+try{const {text}=await SAMPLE(c.turns,{cache:false,modelTier:"quick",onText:({text})=>{box.innerHTML=`<p class="mnote"><b>✦ Claude</b></p>`+text.split(/\n+/).filter(l=>l.trim()).map(l=>`<p>${esc(l)}</p>`).join("")}});c.turns.push({role:"assistant",content:text});return true}
+catch(e){c.turns.pop();const m=aiErr(e);box.innerHTML=(e&&e.text?`<p>${esc(e.text)}</p>`:"")+(m?`<p class="mnote err">${esc(m)}</p>`:"");return false}}
+rf.addEventListener("submit",async e=>{e.preventDefault();const arg=ra.value.trim();if(!arg||!tctx){ra.focus();return}
+const me=document.createElement("div");me.className="msg me";me.innerHTML=`<p>${esc(arg)}</p>`;log.appendChild(me);
+const bot=document.createElement("div");bot.className="msg bot";bot.innerHTML=SAMPLE?'<div class="aiout"></div>':evalArg(arg,tctx);log.appendChild(bot);ra.value="";rl.textContent="Quer responder ou tentar de novo? Escreve aqui:";me.scrollIntoView({behavior:"smooth",block:"start"});
+if(SAMPLE){const btn=rf.querySelector("button");btn.disabled=true;const ok=await claudeDebate(arg,tctx,bot.querySelector(".aiout"));if(!ok)bot.insertAdjacentHTML("afterbegin",evalArg(arg,tctx));btn.disabled=false}});
+ra.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();rf.requestSubmit()}});
+
 })();
 
 render();
